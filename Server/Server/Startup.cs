@@ -27,6 +27,7 @@ namespace Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddCors();
             services.AddSignalR();
         }
 
@@ -42,6 +43,12 @@ namespace Server
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseCors(options => options
+                .WithOrigins("http://localhost:4200") // TODO: Get from config
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials());
 
             app.UseSignalR(route => route.MapHub<CommunicationHub>("/communicationHub"));
 
