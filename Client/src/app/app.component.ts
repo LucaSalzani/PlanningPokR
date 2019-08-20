@@ -8,6 +8,7 @@ import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
 })
 export class AppComponent implements OnInit {
   private hubConnection: HubConnection;
+  public message = 'I say: ';
 
   ngOnInit(): void {
     this.hubConnection = new HubConnectionBuilder().withUrl('https://localhost:5001/communicationHub').build(); // TODO: Get from config
@@ -16,5 +17,7 @@ export class AppComponent implements OnInit {
       .start()
       .then(() => console.log('Connection started!'))
       .catch(err => console.log('Error while establishing connection :(', err));
+
+    this.hubConnection.on('sendToAll', payload => this.message += payload);
   }
 }

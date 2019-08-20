@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Server.Communication;
 
 namespace Server.Controllers
 {
@@ -10,10 +12,18 @@ namespace Server.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        private readonly IHubContext<CommunicationHub> hubContext;
+
+        public ValuesController(IHubContext<CommunicationHub> hubContext)
+        {
+            this.hubContext = hubContext;
+        }
+
         // GET api/values
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
+            hubContext.Clients.All.SendAsync("sendToAll", "Ich lieb dich!!!");
             return new string[] { "value1", "value2" };
         }
 
