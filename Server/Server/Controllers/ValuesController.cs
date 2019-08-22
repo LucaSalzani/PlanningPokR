@@ -20,7 +20,13 @@ namespace Server.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
-            hubContext.Clients.All.SendAsync("sendToAll", "Ich lieb dich!!!");
+            var votingStateUpdate = new VotingStateUpdate
+            {
+                Status = "Voting",
+                Voters = new string[] { "John Aschenbescher", "Monika Schwerverbrecher" }
+            };
+
+            hubContext.Clients.All.SendAsync("votingStateUpdate", votingStateUpdate);
             return new string[] { "value1", "value2" };
         }
 

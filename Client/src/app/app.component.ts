@@ -1,24 +1,33 @@
-import { Component, OnInit } from '@angular/core';
-import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
-import { environment } from '../environments/environment';
+import { Component, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
+
+import { VotingStateUpdate, CommunicationHubService } from './core/communication-hub.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
-  private hubConnection: HubConnection;
-  public message = 'I say: ';
+export class AppComponent implements OnDestroy {
+  private votingStateUpdateSubscription: Subscription;
 
-  ngOnInit(): void {
-    this.hubConnection = new HubConnectionBuilder().withUrl(environment.communicationHubBaseUrl + environment.communicationHubPath).build();
+  public votingStateUpdate: VotingStateUpdate;
 
-    this.hubConnection
-      .start()
-      .then(() => console.log('Connection started!'))
-      .catch(err => console.log('Error while establishing connection :(', err));
+  constructor(private communicationHubService: CommunicationHubService) {
+    this.votingStateUpdate = {
+      status: 'Revealed',
+      voters: []
+    };
 
-    this.hubConnection.on('sendToAll', payload => this.message += payload);
+    this.votingStateUpdateSubscription = this.communicationHubService.getVotingStateUpdate().subscribe(
+      stateUpdate => {
+        this.votingStateUpdate = stateUpdate;
+      }
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.communicationHubService.disconnect();
+    this.votingStateUpdateSubscription.unsubscribe();
   }
 }
