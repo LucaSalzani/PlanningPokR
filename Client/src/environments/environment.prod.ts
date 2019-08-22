@@ -1,3 +1,5 @@
 export const environment = {
-  production: true
+  production: true,
+  communicationHubBaseUrl: 'https://localhost:5001/',
+  communicationHubPath: 'communicationHub'
 };

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -11,7 +12,7 @@ export class AppComponent implements OnInit {
   public message = 'I say: ';
 
   ngOnInit(): void {
-    this.hubConnection = new HubConnectionBuilder().withUrl('https://localhost:5001/communicationHub').build(); // TODO: Get from config
+    this.hubConnection = new HubConnectionBuilder().withUrl(environment.communicationHubBaseUrl + environment.communicationHubPath).build();
 
     this.hubConnection
       .start()
