@@ -9,3 +9,4 @@ Planning Poker web app with Jira integration
 * Logging
 * Azure
 * Jira API (Atlassin.Jira)
+* https://www.figma.com/
