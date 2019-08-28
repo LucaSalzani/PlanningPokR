@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 
 import { CommunicationHubService, ParticipantsStateUpdate } from 'src/app/core';
 
@@ -10,25 +10,14 @@ import { CommunicationHubService, ParticipantsStateUpdate } from 'src/app/core';
 })
 export class ParticipantListComponent implements OnDestroy {
 
-  private participantsStateUpdateSubscription: Subscription;
-
-  public participantsStateUpdate: ParticipantsStateUpdate;
+  public participantsStateUpdate$: Observable<ParticipantsStateUpdate>;
 
   constructor(private communicationHubService: CommunicationHubService) {
-    this.participantsStateUpdate = {
-      participants: []
-    };
-
-    this.participantsStateUpdateSubscription = this.communicationHubService.getParticipantsStateUpdate().subscribe(
-      stateUpdate => {
-        this.participantsStateUpdate = stateUpdate;
-      }
-    );
+    this.participantsStateUpdate$ = this.communicationHubService.getParticipantsStateUpdate();
   }
 
   ngOnDestroy(): void {
     this.communicationHubService.leaveRoomAsync(); // TODO: Maybe move to room.component.ts
-    this.participantsStateUpdateSubscription.unsubscribe();
   }
 
 }
