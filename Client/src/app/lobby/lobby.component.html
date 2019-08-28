@@ -4,10 +4,10 @@
 </div>
 
 <div class="row align-items-center mb-2" *ngFor="let room of rooms">
-  <div class="col-sm-2">
+  <div class="col-2">
     {{room.roomName}}
   </div>
-  <div class="col-sm-auto">
-    <button type="button" class="btn btn-primary" (click)="joinRoom(userName + ' ' + room.roomId)">Join</button>
+  <div class="col-auto">
+    <button type="button" class="btn btn-primary" (click)="joinRoom()">Join</button>
   </div>
 </div>
