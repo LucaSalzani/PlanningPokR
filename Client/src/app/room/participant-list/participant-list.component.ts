@@ -27,7 +27,7 @@ export class ParticipantListComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.communicationHubService.leaveRoomAsync();
+    this.communicationHubService.leaveRoomAsync(); // TODO: Maybe move to room.component.ts
     this.participantsStateUpdateSubscription.unsubscribe();
   }
 

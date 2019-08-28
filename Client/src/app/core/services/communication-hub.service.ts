@@ -57,5 +57,3 @@ export interface VotingStateUpdate { // TODO: Move to better place
   status: 'Voting' | 'Revealed';
   voters: string[];
 }
-
-
