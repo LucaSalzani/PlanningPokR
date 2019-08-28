@@ -1,4 +1,8 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+
+import { CommunicationHubService } from '../core/services';
+import { Room } from '../core/models';
 
 @Component({
   selector: 'app-lobby',
@@ -9,7 +13,7 @@ export class LobbyComponent {
   public userName: string;
   public rooms: Room[];
 
-  constructor() {
+  constructor(private communicationHubService: CommunicationHubService, private router: Router) {
     this.rooms = [
       { roomName: 'Anubis', roomId: 'needed??' },
       { roomName: 'Geb', roomId: 'needed??' },
@@ -20,13 +24,12 @@ export class LobbyComponent {
     ];
   }
 
-  joinRoom(roomId: string) {
-    console.log(roomId);
+  async joinRoom(roomId: string) {
+    console.log(roomId + this.userName);
+    await this.communicationHubService.createParticipantAsync(this.userName);
+    this.router.navigateByUrl('/room');
   }
 
 }
 
-export interface Room {
-  roomName: string;
-  roomId: string;
-}
+

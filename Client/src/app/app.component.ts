@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 
-import { VotingStateUpdate, CommunicationHubService } from './core/communication-hub.service';
+import { VotingStateUpdate, CommunicationHubService } from './core/services';
 
 @Component({
   selector: 'app-root',
@@ -27,7 +27,6 @@ export class AppComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.communicationHubService.disconnect();
     this.votingStateUpdateSubscription.unsubscribe();
   }
 }

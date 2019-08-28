@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Server.Communication;
+using Server.Repositories;
 
 namespace Server
 {
@@ -24,6 +25,8 @@ namespace Server
             services.AddCors();
             services.AddSignalR();
             services.Configure<ApplicationConfiguration>(Configuration.GetSection("ApplicationConfiguration"));
+
+            services.AddSingleton<IParticipantRepository, ParticipantRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

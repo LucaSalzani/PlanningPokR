@@ -6,11 +6,15 @@ import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LobbyComponent } from './lobby';
+import { RoomComponent } from './room';
+import { ParticipantListComponent } from './room/participant-list';
 
 @NgModule({
   declarations: [
     AppComponent,
-    LobbyComponent
+    LobbyComponent,
+    RoomComponent,
+    ParticipantListComponent
   ],
   imports: [
     BrowserModule,
