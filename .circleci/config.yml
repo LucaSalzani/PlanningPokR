@@ -8,12 +8,12 @@ jobs:
       - run:
           name: Restore packages
           command:
-            dotnet restore
+            dotnet restore Server/
       - run:
           name: Build app
           command:
-            dotnet build
+            dotnet build Server/
       - run:
           name: Run App
           command:
-            dotnet run
+            dotnet run --project Server/Server/Server.csproj
