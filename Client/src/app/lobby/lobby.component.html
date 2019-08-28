@@ -1,0 +1,13 @@
+<div class="form-group">
+  <label for="userName">Name</label>
+  <input type="text" class="form-control" id="userName" [(ngModel)]="userName">
+</div>
+
+<div class="row align-items-center mb-2" *ngFor="let room of rooms">
+  <div class="col-sm-2">
+    {{room.roomName}}
+  </div>
+  <div class="col-sm-auto">
+    <button type="button" class="btn btn-primary" (click)="joinRoom(userName + ' ' + room.roomId)">Join</button>
+  </div>
+</div>
