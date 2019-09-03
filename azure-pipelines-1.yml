@@ -45,17 +45,3 @@ steps:
   inputs:
     artifactName: 'angular'
     targetPath: 'Client/dist'
-
-- task: ArchiveFiles@2
-  inputs:
-    rootFolderOrFile: 'Client/dist'
-    includeRootFolder: true
-    archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/Client.zip'
-    replaceExistingArchive: true
-
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
-    publishLocation: 'Container'
