@@ -64,6 +64,7 @@ Planning Poker web app with SignalR
 * 2️⃣ NPM packages are used from cache
 * 2️⃣ NuGet packages are used from cache
 * 2️⃣ Find some nice way to integrate configurations in the application
+* 3️⃣ Split app into dev and production environment
 * 🚫 Secrets (Jira credentials) are injected from outside and are not in the Repo :D
 
 ### Bugs
