@@ -26,7 +26,6 @@ export class LobbyComponent {
 
   async joinRoom() {
     await this.communicationHubService.createParticipantAsync(this.userName);
-    this.router.navigateByUrl('/room');
+    this.router.navigateByUrl(`/room/${42}`);
   }
-
 }

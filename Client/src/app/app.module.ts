@@ -8,13 +8,17 @@ import { AppComponent } from './app.component';
 import { LobbyComponent } from './lobby';
 import { RoomComponent } from './room';
 import { ParticipantListComponent } from './room/participant-list';
+import { BacklogComponent } from './room/backlog/backlog.component';
+import { PokerComponent } from './room/poker/poker.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LobbyComponent,
     RoomComponent,
-    ParticipantListComponent
+    ParticipantListComponent,
+    BacklogComponent,
+    PokerComponent
   ],
   imports: [
     BrowserModule,
