@@ -30,6 +30,17 @@ namespace Server.Repositories
             participants.Add(participant);
         }
 
+        public void Update(Participant participant)
+        {
+            var oldParticipant = GetById(participant.ConnectionId);
+            var index = participants.IndexOf(oldParticipant);
+
+            if (index != -1)
+            {
+                participants[index] = participant;
+            }
+        }
+
         public bool Remove(Participant participant)
         {
             return participants.Remove(participant);

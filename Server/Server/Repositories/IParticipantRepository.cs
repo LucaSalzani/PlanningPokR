@@ -12,6 +12,8 @@ namespace Server.Repositories
 
         void Create(Participant participant);
 
+        void Update(Participant participant);
+
         bool Remove(Participant participant);
 
         Participant Remove(string connectionId);

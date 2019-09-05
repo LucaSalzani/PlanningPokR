@@ -1,4 +1,4 @@
 <p>participant-list works!</p>
 <ul>
-  <li *ngFor="let participant of (participantsStateUpdate$ | async).participants">Participant: {{ participant.name }}</li>
+  <li *ngFor="let participant of (participantsStateUpdate$ | async).participants">Participant: {{ participant.name }}, Has voted: {{ participant.hasVoted }}</li>
 </ul>

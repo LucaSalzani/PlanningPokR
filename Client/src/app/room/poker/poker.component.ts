@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
+import { CommunicationHubService } from 'src/app/core/services';
 
 @Component({
   selector: 'app-poker',
   templateUrl: './poker.component.html',
   styleUrls: ['./poker.component.scss']
 })
-export class PokerComponent implements OnInit {
+export class PokerComponent {
 
-  constructor() { }
+  constructor(private communicationHubService: CommunicationHubService) { }
 
-  ngOnInit() {
+  async selectValue(value: number) {
+    await this.communicationHubService.selectValueAsync(value);
   }
-
 }

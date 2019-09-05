@@ -15,21 +15,36 @@ namespace Server.Communication
             this.participantRepository = participantRepository;
         }
 
+        [HubMethodName("createParticipant")]
         public async Task CreateParticipant(string name)
         {
             var participant = new Participant
             {
                 ConnectionId = Context.ConnectionId,
-                Name = name
+                Name = name,
+                Vote = null,
             };
             participantRepository.Create(participant);
 
             await SendParticipantsStateUpdate();
         }
 
+        [HubMethodName("leaveRoom")]
         public async Task LeaveRoom()
         {
             participantRepository.Remove(Context.ConnectionId);
+
+            await SendParticipantsStateUpdate();
+        }
+
+        [HubMethodName("selectValue")]
+        public async Task SelectValue(int value)
+        {
+            // TODO: Nullcheck
+            var participant = participantRepository.GetById(Context.ConnectionId);
+
+            participant.Vote = value;
+            participantRepository.Update(participant);
 
             await SendParticipantsStateUpdate();
         }
@@ -38,10 +53,20 @@ namespace Server.Communication
         {
             var participantsStateUpdate = new ParticipantsStateUpdate
             {
-                Participants = participantRepository.GetAll().ToList()
+                Participants = participantRepository.GetAll().Select(MapParticipant).ToList()
             };
 
             await Clients.All.SendAsync("participantsStateUpdate", participantsStateUpdate);
+        }
+
+        private ParticipantExternalDto MapParticipant(Participant participant)
+        {
+            return new ParticipantExternalDto
+            {
+                ConnectionId = participant.ConnectionId,
+                Name = participant.Name,
+                HasVoted = participant.Vote.HasValue,
+            };
         }
     }
 }
