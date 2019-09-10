@@ -55,7 +55,7 @@ steps:
   inputs:
     command: 'custom'
     workingDir: 'Client/'
-    customCommand: 'run test -- --watch=false'
+    customCommand: 'run test -- --watch=false --browsers=ChromeHeadless'
 
 - task: PublishPipelineArtifact@0
   inputs:
