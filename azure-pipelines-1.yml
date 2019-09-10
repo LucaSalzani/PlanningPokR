@@ -18,6 +18,11 @@ steps:
   displayName: 'dotnet build $(buildConfiguration)'
 - task: DotNetCoreCLI@2
   inputs:
+    command: 'test'
+    projects: 'Server.UnitTest/Server.UnitTest.csproj'
+    workingDirectory: 'Server/'
+- task: DotNetCoreCLI@2
+  inputs:
     command: 'publish'
     publishWebProjects: true
     arguments: '--configuration release --output $(Build.ArtifactStagingDirectory)'
@@ -40,6 +45,13 @@ steps:
     command: custom
     customCommand: run build -- --prod
     workingDir: 'Client/'
+
+- task: Npm@1
+  displayName: 'Test Angular'
+  inputs:
+    command: 'custom'
+    workingDir: 'Client/'
+    customCommand: 'run test -- --browsers=ChromeHeadless'
 
 - task: PublishPipelineArtifact@0
   inputs:
