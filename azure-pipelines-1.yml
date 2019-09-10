@@ -14,8 +14,8 @@ variables:
 
 steps:
 - script: dotnet build --configuration $(buildConfiguration)
-  workingDirectory: Server/
   displayName: 'dotnet build $(buildConfiguration)'
+  workingDirectory: Server/
 
 - task: DotNetCoreCLI@2
   displayName: 'Dotnet Test'
@@ -32,6 +32,7 @@ steps:
     workingDirectory: 'Server/'
 
 - task: PublishBuildArtifacts@1
+  displayName: 'Dotnet Publish Artifacts'
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop'
@@ -44,26 +45,28 @@ steps:
     Contents: 'TESTS-*.xml'
 
 - task: Npm@1
-  displayName: 'npm install'
+  displayName: 'Angular npm install'
   inputs:
     command: install
     workingDir: 'Client/'
 
 - task: Npm@1
-  displayName: 'Build Angular'
+  displayName: 'Angular Build'
   inputs:
     command: custom
     customCommand: run build -- --prod
     workingDir: 'Client/'
 
 - task: Npm@1
-  displayName: 'Test Angular'
+  displayName: 'Angular Test'
   inputs:
     command: 'custom'
     workingDir: 'Client/'
-    customCommand: 'run test -- --watch=false --browsers=ChromeHeadless'
+    customCommand: 'run test -- --watch=false'
 
 - task: PublishTestResults@2
+  displayName: 'Angular Publish Test Results'
+  condition: succeededOrFailed()
   inputs:
     testResultsFormat: 'JUnit'
     testResultsFiles: '**/TESTS-*.xml'
@@ -71,6 +74,7 @@ steps:
     testRunTitle: 'Angular'
 
 - task: PublishPipelineArtifact@0
+  displayName: 'Angular Publish Artifacts'
   inputs:
     artifactName: 'angular'
     targetPath: 'Client/dist'
