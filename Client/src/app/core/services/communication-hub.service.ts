@@ -1,3 +1,4 @@
+import { AuthService } from './../../auth/auth.service';
 import { ParticipantsStateUpdate } from './../models/participants-state-update.model';
 import { VotingStateUpdate } from './communication-hub.service';
 import { Injectable } from '@angular/core';
@@ -14,11 +15,13 @@ export class CommunicationHubService {
   private votingStateUpdate$: Subject<VotingStateUpdate>;
   private participantsStateUpdate$: Subject<ParticipantsStateUpdate>;
 
-  constructor() {
+  constructor(private authService: AuthService) {
     this.votingStateUpdate$ = new Subject<VotingStateUpdate>();
     this.participantsStateUpdate$ = new BehaviorSubject<ParticipantsStateUpdate>({ participants: [], areVotesRevealed: false });
 
-    this.hubConnection = new HubConnectionBuilder().withUrl(environment.communicationHubBaseUrl + environment.communicationHubPath).build();
+    this.hubConnection = new HubConnectionBuilder().withUrl(environment.communicationHubBaseUrl + environment.communicationHubPath, {
+      accessTokenFactory: () => authService.jwt
+    }).build();
 
     this.connect();
   }

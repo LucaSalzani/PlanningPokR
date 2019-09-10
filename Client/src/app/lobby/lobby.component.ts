@@ -15,17 +15,17 @@ export class LobbyComponent {
 
   constructor(private communicationHubService: CommunicationHubService, private router: Router) {
     this.rooms = [
-      { roomName: 'Anubis', roomId: 'needed??' },
-      { roomName: 'Geb', roomId: 'needed??' },
-      { roomName: 'Horus', roomId: 'needed??' },
-      { roomName: 'Maat', roomId: 'needed??' },
-      { roomName: 'Osiris', roomId: 'needed??' },
-      { roomName: 'Seth', roomId: 'needed??' },
+      { roomName: 'Anubis', roomId: 'anubis' },
+      { roomName: 'Geb', roomId: 'geb' },
+      { roomName: 'Horus', roomId: 'horus' },
+      { roomName: 'Maat', roomId: 'maat' },
+      { roomName: 'Osiris', roomId: 'osiris' },
+      { roomName: 'Seth', roomId: 'seth' },
     ];
   }
 
-  async joinRoom() {
+  async joinRoom(roomId: string) {
     await this.communicationHubService.createParticipantAsync(this.userName);
-    this.router.navigateByUrl(`/room/${42}`);
+    this.router.navigateByUrl(`/room/${roomId}`);
   }
 }

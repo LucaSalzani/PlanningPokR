@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -10,6 +11,7 @@ import { RoomComponent } from './room';
 import { ParticipantListComponent } from './room/participant-list';
 import { BacklogComponent } from './room/backlog/backlog.component';
 import { PokerComponent } from './room/poker/poker.component';
+import { LoginComponent } from './auth/login/login.component';
 
 @NgModule({
   declarations: [
@@ -18,11 +20,13 @@ import { PokerComponent } from './room/poker/poker.component';
     RoomComponent,
     ParticipantListComponent,
     BacklogComponent,
-    PokerComponent
+    PokerComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    HttpClientModule,
     FormsModule,
     NgbModule
   ],

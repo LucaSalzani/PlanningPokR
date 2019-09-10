@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Server.Models;
 using Server.Repositories;
@@ -37,6 +38,7 @@ namespace Server.Communication
             await SendParticipantsStateUpdate();
         }
 
+        [Authorize]
         [HubMethodName("selectValue")]
         public async Task SelectValue(int value)
         {

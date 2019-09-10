@@ -1,11 +1,14 @@
+import { LoginComponent } from './auth/login/login.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { LobbyComponent } from './lobby';
 import { RoomComponent, BacklogComponent, PokerComponent } from './room';
+import { AuthGuard } from './auth/auth.guard';
 
 const routes: Routes = [
-  { path: 'lobby', component: LobbyComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'lobby', component: LobbyComponent, canActivate: [AuthGuard], },
   {
     path: 'room/:roomid', component: RoomComponent,
     children: [
