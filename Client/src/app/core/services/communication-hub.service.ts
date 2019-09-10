@@ -16,7 +16,7 @@ export class CommunicationHubService {
 
   constructor() {
     this.votingStateUpdate$ = new Subject<VotingStateUpdate>();
-    this.participantsStateUpdate$ = new BehaviorSubject<ParticipantsStateUpdate>({participants: []});
+    this.participantsStateUpdate$ = new BehaviorSubject<ParticipantsStateUpdate>({ participants: [], areVotesRevealed: false });
 
     this.hubConnection = new HubConnectionBuilder().withUrl(environment.communicationHubBaseUrl + environment.communicationHubPath).build();
 
@@ -53,6 +53,10 @@ export class CommunicationHubService {
     await this.hubConnection.invoke(CommunicationHubMethod.SelectValue, value);
   }
 
+  public async revealVotes() {
+    await this.hubConnection.invoke(CommunicationHubMethod.RevealVotes);
+  }
+
   public disconnect() {
     this.hubConnection.stop();
   }
@@ -62,6 +66,7 @@ export enum CommunicationHubMethod {
   CreateParticipant = 'createParticipant',
   LeaveRoom = 'leaveRoom',
   SelectValue = 'selectValue',
+  RevealVotes = 'revealVotes',
   VotingStateUpdate = 'votingStateUpdate',
   ParticipantsStateUpdate = 'participantsStateUpdate',
 }

@@ -13,4 +13,8 @@ export class PokerComponent {
   async selectValue(value: number) {
     await this.communicationHubService.selectValueAsync(value);
   }
+
+  async revealVotes() {
+    await this.communicationHubService.revealVotes();
+  }
 }

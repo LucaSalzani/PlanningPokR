@@ -49,23 +49,34 @@ namespace Server.Communication
             await SendParticipantsStateUpdate();
         }
 
+        [HubMethodName("revealVotes")]
+        public async Task RevealVotes()
+        {
+            participantRepository.SetAreVotesRevealed(true);
+
+            await SendParticipantsStateUpdate();
+        }
+
         private async Task SendParticipantsStateUpdate()
         {
+            var areVotesRevealed = participantRepository.GetAreVotesRevealed();
             var participantsStateUpdate = new ParticipantsStateUpdate
             {
-                Participants = participantRepository.GetAll().Select(MapParticipant).ToList()
+                AreVotesRevealed = areVotesRevealed,
+                Participants = participantRepository.GetAll().Select(p => MapParticipant(p, areVotesRevealed)).ToList(),
             };
 
             await Clients.All.SendAsync("participantsStateUpdate", participantsStateUpdate);
         }
 
-        private ParticipantExternalDto MapParticipant(Participant participant)
+        private ParticipantExternalDto MapParticipant(Participant participant, bool areVotesRevealed)
         {
             return new ParticipantExternalDto
             {
                 ConnectionId = participant.ConnectionId,
                 Name = participant.Name,
                 HasVoted = participant.Vote.HasValue,
+                Vote = areVotesRevealed ? participant.Vote : null,
             };
         }
     }

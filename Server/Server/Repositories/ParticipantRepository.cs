@@ -8,6 +8,7 @@ namespace Server.Repositories
     public class ParticipantRepository : IParticipantRepository
     {
         private List<Participant> participants;
+        private bool areVotesRevealed; // TODO: Extract to room
 
         public ParticipantRepository()
         {
@@ -58,6 +59,16 @@ namespace Server.Repositories
             participants.Remove(participantToRemove);
 
             return participantToRemove;
+        }
+
+        public void SetAreVotesRevealed(bool value)
+        {
+            areVotesRevealed = value;
+        }
+
+        public bool GetAreVotesRevealed()
+        {
+            return areVotesRevealed;
         }
     }
 }
