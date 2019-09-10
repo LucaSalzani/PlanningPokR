@@ -1,6 +1,5 @@
+import { environment } from './../../environments/environment.prod';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { delay, tap } from 'rxjs/operators';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
 @Injectable({
@@ -24,7 +23,7 @@ export class AuthService {
     parameters = parameters.append('userName', 'userNameValue');
     this.isLoggedIn = true; // TODO: Only if request ok
 
-    this.http.get<string>('https://localhost:5001/api/auth', { params: parameters, responseType: 'text' as 'json'})
+    this.http.get<string>(`${environment.backendBaseUrl}/api/auth`, { params: parameters, responseType: 'text' as 'json'})
     .subscribe((token: string) => {
       this.isLoggedIn = true;
       this.jwt = token;

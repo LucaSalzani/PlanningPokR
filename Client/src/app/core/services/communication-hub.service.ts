@@ -19,7 +19,7 @@ export class CommunicationHubService {
     this.votingStateUpdate$ = new Subject<VotingStateUpdate>();
     this.participantsStateUpdate$ = new BehaviorSubject<ParticipantsStateUpdate>({ participants: [], areVotesRevealed: false });
 
-    this.hubConnection = new HubConnectionBuilder().withUrl(environment.communicationHubBaseUrl + environment.communicationHubPath, {
+    this.hubConnection = new HubConnectionBuilder().withUrl(environment.backendBaseUrl + environment.communicationHubPath, {
       accessTokenFactory: () => authService.jwt
     }).build();
 
