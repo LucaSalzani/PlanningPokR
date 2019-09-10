@@ -16,17 +16,21 @@ steps:
 - script: dotnet build --configuration $(buildConfiguration)
   workingDirectory: Server/
   displayName: 'dotnet build $(buildConfiguration)'
+
 - task: DotNetCoreCLI@2
+  displayName: 'Dotnet Test'
   inputs:
     command: 'test'
-    projects: 'Server.UnitTest/Server.UnitTest.csproj'
-    workingDirectory: 'Server/'
+    projects: '**/*Test/*.csproj'
+    arguments: '--configuration $(buildConfiguration)'
 - task: DotNetCoreCLI@2
+  displayName: 'Dotnet Publish'
   inputs:
     command: 'publish'
     publishWebProjects: true
     arguments: '--configuration release --output $(Build.ArtifactStagingDirectory)'
     workingDirectory: 'Server/'
+
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
@@ -51,7 +55,7 @@ steps:
   inputs:
     command: 'custom'
     workingDir: 'Client/'
-    customCommand: 'run test -- --browsers=ChromeHeadless'
+    customCommand: 'run test -- --watch=false'
 
 - task: PublishPipelineArtifact@0
   inputs:
