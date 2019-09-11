@@ -4,7 +4,7 @@ export interface ParticipantsStateUpdate {
 }
 
 export interface Participant {
-  connectionId: string;
+  userId: string;
   name: string;
   hasVoted: boolean;
   vote: number | null;

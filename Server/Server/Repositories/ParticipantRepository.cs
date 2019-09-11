@@ -20,20 +20,22 @@ namespace Server.Repositories
             return participants;
         }
 
-        public Participant GetById(string connectionId)
+        public Participant GetById(string userId)
         {
-            return participants.SingleOrDefault(p => p.ConnectionId == connectionId);
+            return participants.SingleOrDefault(p => p.UserId == userId);
         }
 
         public void Create(Participant participant)
         {
-            // TODO: Avoid duplicates
-            participants.Add(participant);
+            if (GetById(participant.UserId) == null)
+            {
+                participants.Add(participant);
+            }
         }
 
         public void Update(Participant participant)
         {
-            var oldParticipant = GetById(participant.ConnectionId);
+            var oldParticipant = GetById(participant.UserId);
             var index = participants.IndexOf(oldParticipant);
 
             if (index != -1)
@@ -47,9 +49,9 @@ namespace Server.Repositories
             return participants.Remove(participant);
         }
 
-        public Participant Remove(string connectionId)
+        public Participant Remove(string userId)
         {
-            var participantToRemove = participants.SingleOrDefault(p => p.ConnectionId == connectionId);
+            var participantToRemove = participants.SingleOrDefault(p => p.UserId == userId);
 
             if (participantToRemove == null)
             {

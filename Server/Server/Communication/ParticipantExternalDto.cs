@@ -2,7 +2,7 @@
 {
     public class ParticipantExternalDto
     {
-        public string ConnectionId { get; set; }
+        public string UserId { get; set; }
 
         public string Name { get; set; }
 

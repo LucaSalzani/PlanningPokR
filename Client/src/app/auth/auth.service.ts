@@ -1,4 +1,4 @@
-import { environment } from './../../environments/environment.prod';
+import { environment } from './../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
@@ -16,15 +16,14 @@ export class AuthService {
     this.isLoggedIn = !!this.jwt; // TODO: Check validity
   }
 
-  login() {
+  async login(userId: string, userName: string) {
     let parameters = new HttpParams();
 
-    parameters = parameters.append('userId', 'userIdValue');
-    parameters = parameters.append('userName', 'userNameValue');
-    this.isLoggedIn = true; // TODO: Only if request ok
+    parameters = parameters.append('userId', userId);
+    parameters = parameters.append('userName', userName);
 
-    this.http.get<string>(`${environment.backendBaseUrl}/api/auth`, { params: parameters, responseType: 'text' as 'json'})
-    .subscribe((token: string) => {
+    return await this.http.get<string>(`${environment.backendBaseUrl}api/auth`, { params: parameters, responseType: 'text' as 'json'})
+    .toPromise().then((token: string) => { // TODO: Error handling
       this.isLoggedIn = true;
       this.jwt = token;
       localStorage.setItem('jwt', token);

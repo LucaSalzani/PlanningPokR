@@ -10,7 +10,6 @@ import { Room } from '../core/models';
   styleUrls: ['./lobby.component.scss']
 })
 export class LobbyComponent {
-  public userName: string;
   public rooms: Room[];
 
   constructor(private communicationHubService: CommunicationHubService, private router: Router) {
@@ -25,7 +24,7 @@ export class LobbyComponent {
   }
 
   async joinRoom(roomId: string) {
-    await this.communicationHubService.createParticipantAsync(this.userName);
+    await this.communicationHubService.enterRoomAsync(roomId);
     this.router.navigateByUrl(`/room/${roomId}`);
   }
 }

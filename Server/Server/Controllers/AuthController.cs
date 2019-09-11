@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Server.Repositories;
 using Server.Security;
 
 namespace Server.Controllers
@@ -14,10 +15,12 @@ namespace Server.Controllers
     public class AuthController : ControllerBase
     {
         private IPrivateKeyGenerator privateKeyGenerator;
+        private IParticipantRepository participantRepository;
 
-        public AuthController(IPrivateKeyGenerator privateKeyGenerator)
+        public AuthController(IPrivateKeyGenerator privateKeyGenerator, IParticipantRepository participantRepository)
         {
             this.privateKeyGenerator = privateKeyGenerator;
+            this.participantRepository = participantRepository;
         }
 
         [HttpGet]
@@ -33,8 +36,8 @@ namespace Server.Controllers
                 NotBefore = DateTime.UtcNow,
                 Expires = DateTime.UtcNow.AddMinutes(60),
                 Subject = new ClaimsIdentity(new List<Claim> {
-                    new Claim("userid", userId),
-                    new Claim("userName", userName)
+                    new Claim(ClaimTypes.NameIdentifier, userId),
+                    new Claim(ClaimTypes.Name, userName)
                 }),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(signingKey), SecurityAlgorithms.HmacSha256Signature)
             };
@@ -42,6 +45,12 @@ namespace Server.Controllers
             var jwtToken = jwtTokenHandler.CreateJwtSecurityToken(tokenDescriptor);
             var token = jwtTokenHandler.WriteToken(jwtToken);
             return Ok(token);
+        }
+
+        [HttpGet("appinfo")]
+        public IActionResult GetAppInfo()
+        {
+            return Ok(participantRepository.GetAll());
         }
     }
 }

@@ -8,11 +8,13 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
+  public userName: string;
+  public userId: string;
 
   constructor(public authService: AuthService, public router: Router) {}
 
-  login() {
-    this.authService.login();
+  async login() {
+    await this.authService.login(this.userId, this.userName);
     if (this.authService.isLoggedIn) {
       const redirect = this.authService.redirectUrl ? this.router.parseUrl(this.authService.redirectUrl) : '/';
       this.router.navigateByUrl(redirect);

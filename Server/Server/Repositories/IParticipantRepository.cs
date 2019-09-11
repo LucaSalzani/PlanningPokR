@@ -8,7 +8,7 @@ namespace Server.Repositories
     {
         IEnumerable<Participant> GetAll();
 
-        Participant GetById(string connectionId);
+        Participant GetById(string userId);
 
         void Create(Participant participant);
 
@@ -16,7 +16,7 @@ namespace Server.Repositories
 
         bool Remove(Participant participant);
 
-        Participant Remove(string connectionId);
+        Participant Remove(string userId);
 
         void SetAreVotesRevealed(bool value);
 

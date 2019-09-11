@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
@@ -7,6 +9,7 @@ using Server.Repositories;
 
 namespace Server.Communication
 {
+    [Authorize]
     public class CommunicationHub : Hub
     {
         private IParticipantRepository participantRepository;
@@ -16,67 +19,93 @@ namespace Server.Communication
             this.participantRepository = participantRepository;
         }
 
-        [HubMethodName("createParticipant")]
-        public async Task CreateParticipant(string name)
+        [HubMethodName("enterRoom")]
+        public async Task EnterRoom(string roomId)
         {
+            var participant = participantRepository.GetById(Context.UserIdentifier);
+
+            if (participant == null)
+            {
+                return;
+            }
+
+            participant.RoomId = roomId;
+            participantRepository.Update(participant);
+            await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
+
+            await SendParticipantsStateUpdate(roomId);
+        }
+
+        public override async Task OnConnectedAsync()
+        {
+            await base.OnConnectedAsync();
+
             var participant = new Participant
             {
-                ConnectionId = Context.ConnectionId,
-                Name = name,
+                UserId = Context.UserIdentifier,
+                UserName = Context.User.Claims.Where(c => c.Type == ClaimTypes.Name).Select(c => c.Value).Single(),
+                ConnectionIds = new List<string> { Context.ConnectionId },
                 Vote = null,
             };
-            participantRepository.Create(participant);
-
-            await SendParticipantsStateUpdate();
+            participantRepository.Create(participant); // TODO: Add to connectionid if user exists. Or better: Update ConnectionId with each communication to hold the most actual value
         }
 
         [HubMethodName("leaveRoom")]
         public async Task LeaveRoom()
         {
-            participantRepository.Remove(Context.ConnectionId);
+            var participant = participantRepository.GetById(Context.UserIdentifier);
 
-            await SendParticipantsStateUpdate();
+            if (participant == null)
+            {
+                return;
+            }
+
+            var roomId = participant.RoomId;
+            participant.RoomId = null;
+            participantRepository.Update(participant);
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomId);
+
+            await SendParticipantsStateUpdate(roomId);
         }
 
-        [Authorize]
         [HubMethodName("selectValue")]
-        public async Task SelectValue(int value)
+        public async Task SelectValue(int value, string roomId)
         {
             // TODO: Nullcheck
-            var participant = participantRepository.GetById(Context.ConnectionId);
+            var participant = participantRepository.GetById(Context.UserIdentifier);
 
             participant.Vote = value;
             participantRepository.Update(participant);
 
-            await SendParticipantsStateUpdate();
+            await SendParticipantsStateUpdate(roomId);
         }
 
         [HubMethodName("revealVotes")]
-        public async Task RevealVotes()
+        public async Task RevealVotes(string roomId)
         {
             participantRepository.SetAreVotesRevealed(true);
 
-            await SendParticipantsStateUpdate();
+            await SendParticipantsStateUpdate(roomId);
         }
 
-        private async Task SendParticipantsStateUpdate()
+        private async Task SendParticipantsStateUpdate(string roomId)
         {
             var areVotesRevealed = participantRepository.GetAreVotesRevealed();
             var participantsStateUpdate = new ParticipantsStateUpdate
             {
                 AreVotesRevealed = areVotesRevealed,
-                Participants = participantRepository.GetAll().Select(p => MapParticipant(p, areVotesRevealed)).ToList(),
+                Participants = participantRepository.GetAll().Where(p => p.RoomId == roomId).Select(p => MapParticipant(p, areVotesRevealed)).ToList(),
             };
 
-            await Clients.All.SendAsync("participantsStateUpdate", participantsStateUpdate);
+            await Clients.Group(roomId).SendAsync("participantsStateUpdate", participantsStateUpdate);
         }
 
         private ParticipantExternalDto MapParticipant(Participant participant, bool areVotesRevealed)
         {
             return new ParticipantExternalDto
             {
-                ConnectionId = participant.ConnectionId,
-                Name = participant.Name,
+                UserId = participant.UserId,
+                Name = participant.UserName,
                 HasVoted = participant.Vote.HasValue,
                 Vote = areVotesRevealed ? participant.Vote : null,
             };
