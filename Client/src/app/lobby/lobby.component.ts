@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { CommunicationHubService } from '../core/services';
 import { Room } from '../core/models';
 
 @Component({
@@ -12,7 +11,7 @@ import { Room } from '../core/models';
 export class LobbyComponent {
   public rooms: Room[];
 
-  constructor(private communicationHubService: CommunicationHubService, private router: Router) {
+  constructor(private router: Router) {
     this.rooms = [
       { roomName: 'Anubis', roomId: 'anubis' },
       { roomName: 'Geb', roomId: 'geb' },
@@ -23,8 +22,7 @@ export class LobbyComponent {
     ];
   }
 
-  async joinRoom(roomId: string) {
-    await this.communicationHubService.enterRoomAsync(roomId);
+  joinRoom(roomId: string) {
     this.router.navigateByUrl(`/room/${roomId}`);
   }
 }

@@ -1,3 +1,4 @@
+import { ConnectGuard } from './core/guards/connect.guard';
 import { LoginComponent } from './auth/login/login.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
@@ -10,7 +11,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'lobby', component: LobbyComponent, canActivate: [AuthGuard], },
   {
-    path: 'room/:roomid', component: RoomComponent,
+    path: 'room/:roomid', component: RoomComponent, canActivate: [AuthGuard, ConnectGuard], canActivateChild: [AuthGuard, ConnectGuard],
     children: [
       { path: 'backlog', component: BacklogComponent },
       { path: 'poker', component: PokerComponent },

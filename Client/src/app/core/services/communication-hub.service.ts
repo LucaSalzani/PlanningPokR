@@ -1,7 +1,7 @@
 import { AuthService } from './../../auth/auth.service';
 import { ParticipantsStateUpdate } from './../models/participants-state-update.model';
 import { Injectable } from '@angular/core';
-import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
+import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@aspnet/signalr';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
@@ -19,17 +19,19 @@ export class CommunicationHubService {
     this.hubConnection = new HubConnectionBuilder().withUrl(environment.backendBaseUrl + environment.communicationHubPath, {
       accessTokenFactory: () => authService.jwt
     }).build();
-
-    this.connect();
   }
 
-  public connect(): void {
-    this.hubConnection
+  public async connect() {
+    await this.hubConnection
       .start()
       .then(() => console.log('Connection started!'))
       .catch(err => console.log('Error while establishing connection :(', err));
 
     this.hubConnection.on(CommunicationHubMethod.ParticipantsStateUpdate, payload => this.participantsStateUpdate$.next(payload));
+  }
+
+  public isConnected() {
+    return this.hubConnection.state === HubConnectionState.Connected;
   }
 
   public getParticipantsStateUpdate(): Observable<ParticipantsStateUpdate> {
