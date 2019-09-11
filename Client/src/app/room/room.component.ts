@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommunicationHubService } from '../core';
 import { ActivatedRoute } from '@angular/router';
+
+import { CommunicationHubService } from '../core';
 
 @Component({
   selector: 'app-room',

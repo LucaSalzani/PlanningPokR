@@ -9,9 +9,9 @@ import { AppComponent } from './app.component';
 import { LobbyComponent } from './lobby';
 import { RoomComponent } from './room';
 import { ParticipantListComponent } from './room/participant-list';
-import { BacklogComponent } from './room/backlog/backlog.component';
-import { PokerComponent } from './room/poker/poker.component';
-import { LoginComponent } from './auth/login/login.component';
+import { BacklogComponent } from './room/backlog';
+import { PokerComponent } from './room/poker';
+import { LoginComponent } from './auth/login';
 
 @NgModule({
   declarations: [

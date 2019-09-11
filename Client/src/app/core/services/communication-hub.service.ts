@@ -1,10 +1,11 @@
-import { AuthService } from './../../auth/auth.service';
-import { ParticipantsStateUpdate } from './../models/participants-state-update.model';
 import { Injectable } from '@angular/core';
 import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@aspnet/signalr';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
+import { AuthService } from './../../auth/auth.service';
+import { ParticipantsStateUpdate } from './../models/participants-state-update.model';
+import { CommunicationHubMethod } from './communication-hub-method.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -59,11 +60,4 @@ export class CommunicationHubService {
   }
 }
 
-export enum CommunicationHubMethod {
-  EnterRoom = 'enterRoom',
-  LeaveRoom = 'leaveRoom',
-  SelectValue = 'selectValue',
-  RevealVotes = 'revealVotes',
-  VotingStateUpdate = 'votingStateUpdate',
-  ParticipantsStateUpdate = 'participantsStateUpdate',
-}
+

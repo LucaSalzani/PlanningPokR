@@ -1,6 +1,7 @@
-import { CommunicationHubService } from 'src/app/core';
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, RouterStateSnapshot, CanActivate, CanActivateChild } from '@angular/router';
+
+import { CommunicationHubService } from 'src/app/core/services';
 
 @Injectable({
   providedIn: 'root'

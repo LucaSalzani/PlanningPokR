@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { CommunicationHubService } from 'src/app/core/services';
 import { ActivatedRoute } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
+
+import { CommunicationHubService } from 'src/app/core/services';
 
 @Component({
   selector: 'app-poker',

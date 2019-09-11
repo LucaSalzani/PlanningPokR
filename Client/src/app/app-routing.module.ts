@@ -1,11 +1,10 @@
-import { ConnectGuard } from './core/guards/connect.guard';
-import { LoginComponent } from './auth/login/login.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { LobbyComponent } from './lobby';
 import { RoomComponent, BacklogComponent, PokerComponent } from './room';
-import { AuthGuard } from './auth/auth.guard';
+import { AuthGuard, LoginComponent } from './auth';
+import { ConnectGuard } from './core/guards';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
