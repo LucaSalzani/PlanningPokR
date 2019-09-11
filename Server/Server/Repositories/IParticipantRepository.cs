@@ -17,9 +17,5 @@ namespace Server.Repositories
         bool Remove(Participant participant);
 
         Participant Remove(string userId);
-
-        void SetAreVotesRevealed(bool value);
-
-        bool GetAreVotesRevealed();
     }
 }

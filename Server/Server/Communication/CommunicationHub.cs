@@ -13,10 +13,12 @@ namespace Server.Communication
     public class CommunicationHub : Hub
     {
         private IParticipantRepository participantRepository;
+        private IRoomRepository roomRepository;
 
-        public CommunicationHub(IParticipantRepository participantRepository)
+        public CommunicationHub(IParticipantRepository participantRepository, IRoomRepository roomRepository)
         {
             this.participantRepository = participantRepository;
+            this.roomRepository = roomRepository;
         }
 
         [HubMethodName("enterRoom")]
@@ -83,14 +85,16 @@ namespace Server.Communication
         [HubMethodName("revealVotes")]
         public async Task RevealVotes(string roomId)
         {
-            participantRepository.SetAreVotesRevealed(true);
+            var room = roomRepository.Get(roomId);
+            room.AreVotesRevealed = true;
+            roomRepository.Update(room);
 
             await SendParticipantsStateUpdate(roomId);
         }
 
         private async Task SendParticipantsStateUpdate(string roomId)
         {
-            var areVotesRevealed = participantRepository.GetAreVotesRevealed();
+            var areVotesRevealed = roomRepository.Get(roomId).AreVotesRevealed;
             var participantsStateUpdate = new ParticipantsStateUpdate
             {
                 AreVotesRevealed = areVotesRevealed,

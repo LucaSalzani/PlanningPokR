@@ -66,6 +66,7 @@ namespace Server
                 });
 
             services.AddSingleton<IParticipantRepository, ParticipantRepository>();
+            services.AddSingleton<IRoomRepository, RoomRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
