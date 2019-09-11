@@ -21,6 +21,20 @@ namespace Server.Communication
             this.roomRepository = roomRepository;
         }
 
+        public override async Task OnConnectedAsync()
+        {
+            await base.OnConnectedAsync();
+
+            var participant = new Participant
+            {
+                UserId = Context.UserIdentifier,
+                UserName = Context.User.Claims.Where(c => c.Type == ClaimTypes.Name).Select(c => c.Value).Single(),
+                ConnectionIds = new List<string> { Context.ConnectionId },
+                Vote = null,
+            };
+            participantRepository.Create(participant); // TODO: Add to connectionid if user exists. Or better: Update ConnectionId with each communication to hold the most actual value
+        }
+
         [HubMethodName("enterRoom")]
         public async Task EnterRoom(string roomId)
         {
@@ -36,20 +50,6 @@ namespace Server.Communication
             await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
 
             await SendParticipantsStateUpdate(roomId);
-        }
-
-        public override async Task OnConnectedAsync()
-        {
-            await base.OnConnectedAsync();
-
-            var participant = new Participant
-            {
-                UserId = Context.UserIdentifier,
-                UserName = Context.User.Claims.Where(c => c.Type == ClaimTypes.Name).Select(c => c.Value).Single(),
-                ConnectionIds = new List<string> { Context.ConnectionId },
-                Vote = null,
-            };
-            participantRepository.Create(participant); // TODO: Add to connectionid if user exists. Or better: Update ConnectionId with each communication to hold the most actual value
         }
 
         [HubMethodName("leaveRoom")]

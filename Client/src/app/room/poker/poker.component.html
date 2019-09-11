@@ -11,3 +11,9 @@
 <div class="row">
   <button type="button" class="btn btn-primary" (click)="revealVotes()">Reveal</button>
 </div>
+<div class="row" *ngIf="areVotesRevealed">
+  <button type="button" class="btn btn-primary" (click)="resetVotes()">Revote</button>
+  <label for="acceptedVote">Accepted Vote</label>
+  <input type="number" class="form-control" id="acceptedVote" [(ngModel)]="acceptedVote">
+  <button type="button" class="btn btn-primary" (click)="acceptVote()">Accept Vote</button>
+</div>
