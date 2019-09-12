@@ -42,7 +42,12 @@ export class PokerComponent implements OnInit {
   }
 
   async acceptVote(acceptedVote: number) {
-    await this.communicationHubService.setAcceptedVote(this.roomId, this.storyId, acceptedVote); // TODO: set accepted vote for all clients
+    await this.communicationHubService.setAcceptedVote(this.roomId, this.storyId, acceptedVote);
+    await this.resetVotes();
+    await this.communicationHubService.navigate(this.roomId, 'backlog');
+  }
+
+  async abortVoting() {
     await this.resetVotes();
     await this.communicationHubService.navigate(this.roomId, 'backlog');
   }

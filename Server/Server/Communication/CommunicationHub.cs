@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -24,20 +23,22 @@ namespace Server.Communication
         public override async Task OnConnectedAsync()
         {
             await base.OnConnectedAsync();
+            UpdateConnectionId();
 
             var participant = new Participant
             {
                 UserId = Context.UserIdentifier,
                 UserName = Context.User.Claims.Where(c => c.Type == ClaimTypes.Name).Select(c => c.Value).Single(),
-                ConnectionIds = new List<string> { Context.ConnectionId },
+                ConnectionId = Context.ConnectionId,
                 Vote = null,
             };
-            participantRepository.Create(participant); // TODO: Add to connectionid if user exists. Or better: Update ConnectionId with each communication to hold the most actual value
+            participantRepository.Create(participant);
         }
 
         [HubMethodName("enterRoom")]
         public async Task EnterRoom(string roomId)
         {
+            UpdateConnectionId();
             var participant = participantRepository.GetById(Context.UserIdentifier);
 
             if (participant == null)
@@ -57,6 +58,7 @@ namespace Server.Communication
         [HubMethodName("leaveRoom")]
         public async Task LeaveRoom()
         {
+            UpdateConnectionId();
             var participant = participantRepository.GetById(Context.UserIdentifier);
 
             if (participant == null)
@@ -75,6 +77,8 @@ namespace Server.Communication
         [HubMethodName("selectValue")]
         public async Task SelectValue(int value, string roomId)
         {
+            UpdateConnectionId();
+
             // TODO: Nullcheck
             var participant = participantRepository.GetById(Context.UserIdentifier);
 
@@ -87,6 +91,7 @@ namespace Server.Communication
         [HubMethodName("revealVotes")]
         public async Task RevealVotes(string roomId)
         {
+            UpdateConnectionId();
             var room = roomRepository.Get(roomId);
             room.AreVotesRevealed = true;
             roomRepository.Update(room);
@@ -97,6 +102,7 @@ namespace Server.Communication
         [HubMethodName("resetVotes")]
         public async Task ResetVotes(string roomId)
         {
+            UpdateConnectionId();
             var room = roomRepository.Get(roomId);
             room.AreVotesRevealed = false;
             roomRepository.Update(room);
@@ -114,6 +120,7 @@ namespace Server.Communication
         [HubMethodName("setAcceptedVote")]
         public async Task SetAcceptedVote(string roomId, string storyId, int acceptedVote)
         {
+            UpdateConnectionId();
             var room = roomRepository.Get(roomId);
             if (room?.Stories.FirstOrDefault(s => s.StoryId == storyId) == null)
             {
@@ -129,6 +136,7 @@ namespace Server.Communication
         [HubMethodName("navigate")]
         public async Task Navigate(string roomId, string phase, string storyId)
         {
+            UpdateConnectionId();
             var room = roomRepository.Get(roomId);
             room.Phase.PhaseName = phase;
             room.Phase.StoryId = storyId;
@@ -170,6 +178,17 @@ namespace Server.Communication
             };
 
             await Clients.All.SendAsync("storyStateUpdate", storyStateUpdate);
+        }
+
+        private void UpdateConnectionId()
+        {
+            var participant = participantRepository.GetById(Context.UserIdentifier);
+            if (participant != null && participant.ConnectionId != Context.ConnectionId)
+            {
+                participant.ConnectionId = Context.ConnectionId;
+                participant.Vote = null;
+                participantRepository.Update(participant);
+            }
         }
 
         private ParticipantExternalDto MapParticipant(Participant participant, bool areVotesRevealed)
