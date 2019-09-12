@@ -50,6 +50,7 @@ namespace Server.Communication
             await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
 
             await SendParticipantsStateUpdate(roomId);
+            await SendNavigationUpdate(roomId);
         }
 
         [HubMethodName("leaveRoom")]
@@ -92,6 +93,34 @@ namespace Server.Communication
             await SendParticipantsStateUpdate(roomId);
         }
 
+        [HubMethodName("resetVotes")]
+        public async Task ResetVotes(string roomId)
+        {
+            var room = roomRepository.Get(roomId);
+            room.AreVotesRevealed = false;
+            roomRepository.Update(room);
+
+            var participants = participantRepository.GetAll().Where(p => p.RoomId == roomId).ToList();
+            participants.ForEach(p =>
+            {
+                p.Vote = null;
+                participantRepository.Update(p);
+            });
+
+            await SendParticipantsStateUpdate(roomId);
+        }
+
+        [HubMethodName("navigate")]
+        public async Task Navigate(string roomId, string phase, string storyId)
+        {
+            var room = roomRepository.Get(roomId);
+            room.Phase.PhaseName = phase;
+            room.Phase.StoryId = storyId;
+            roomRepository.Update(room);
+
+            await SendNavigationUpdate(roomId);
+        }
+
         private async Task SendParticipantsStateUpdate(string roomId)
         {
             var areVotesRevealed = roomRepository.Get(roomId).AreVotesRevealed;
@@ -102,6 +131,18 @@ namespace Server.Communication
             };
 
             await Clients.Group(roomId).SendAsync("participantsStateUpdate", participantsStateUpdate);
+        }
+
+        private async Task SendNavigationUpdate(string roomId)
+        {
+            var room = roomRepository.Get(roomId);
+            var navigationStateUpdate = new NavigationStateUpdate
+            {
+                Phase = room.Phase.PhaseName,
+                StoryId = room.Phase.StoryId,
+            };
+
+            await Clients.Group(roomId).SendAsync("navigationUpdate", navigationStateUpdate);
         }
 
         private ParticipantExternalDto MapParticipant(Participant participant, bool areVotesRevealed)

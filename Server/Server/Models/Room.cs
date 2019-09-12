@@ -11,5 +11,7 @@ namespace Server.Models
         public List<string> Stories { get; set; }
 
         public bool AreVotesRevealed { get; set; }
+
+        public Phase Phase { get; set; }
     }
 }

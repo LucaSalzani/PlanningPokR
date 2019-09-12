@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@aspnet/signalr';
-import { Subject, Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, Subject } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import { AuthService } from './../../auth/auth.service';
-import { ParticipantsStateUpdate } from './../models/participants-state-update.model';
+import { ParticipantsStateUpdate, NavigationUpdate } from './../models';
 import { CommunicationHubMethod } from './communication-hub-method.enum';
 
 @Injectable({
@@ -12,10 +12,12 @@ import { CommunicationHubMethod } from './communication-hub-method.enum';
 })
 export class CommunicationHubService {
   private hubConnection: HubConnection;
-  private participantsStateUpdate$: Subject<ParticipantsStateUpdate>;
+  private participantsStateUpdate$: BehaviorSubject<ParticipantsStateUpdate>;
+  private navigationUpdate$: Subject<NavigationUpdate>;
 
   constructor(private authService: AuthService) {
     this.participantsStateUpdate$ = new BehaviorSubject<ParticipantsStateUpdate>({ participants: [], areVotesRevealed: false });
+    this.navigationUpdate$ = new Subject<NavigationUpdate>();
 
     this.hubConnection = new HubConnectionBuilder().withUrl(environment.backendBaseUrl + environment.communicationHubPath, {
       accessTokenFactory: () => authService.jwt
@@ -29,6 +31,7 @@ export class CommunicationHubService {
       .catch(err => console.log('Error while establishing connection :(', err));
 
     this.hubConnection.on(CommunicationHubMethod.ParticipantsStateUpdate, payload => this.participantsStateUpdate$.next(payload));
+    this.hubConnection.on(CommunicationHubMethod.NavigationUpdate, payload => this.navigationUpdate$.next(payload));
   }
 
   public isConnected() {
@@ -37,6 +40,10 @@ export class CommunicationHubService {
 
   public getParticipantsStateUpdate(): Observable<ParticipantsStateUpdate> {
     return this.participantsStateUpdate$.asObservable();
+  }
+
+  public getNavigationUpdate(): Observable<NavigationUpdate> {
+    return this.navigationUpdate$.asObservable();
   }
 
   public async enterRoomAsync(roomId: string) {
@@ -53,6 +60,14 @@ export class CommunicationHubService {
 
   public async revealVotes(roomId: string) {
     await this.hubConnection.invoke(CommunicationHubMethod.RevealVotes, roomId);
+  }
+
+  public async resetVotes(roomId: string) {
+    await this.hubConnection.invoke(CommunicationHubMethod.ResetVotes, roomId);
+  }
+
+  public async navigate(roomId: string, phase: 'poker' | 'backlog', storyId?: string) {
+    await this.hubConnection.invoke(CommunicationHubMethod.Navigate, roomId, phase, storyId);
   }
 
   public disconnect() {

@@ -3,6 +3,8 @@ export enum CommunicationHubMethod {
   LeaveRoom = 'leaveRoom',
   SelectValue = 'selectValue',
   RevealVotes = 'revealVotes',
-  VotingStateUpdate = 'votingStateUpdate',
+  Navigate = 'navigate',
+  ResetVotes = 'resetVotes',
+  NavigationUpdate = 'navigationUpdate',
   ParticipantsStateUpdate = 'participantsStateUpdate',
 }

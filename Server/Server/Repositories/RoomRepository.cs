@@ -12,12 +12,12 @@ namespace Server.Repositories
         {
             rooms = new List<Room>
             {
-                new Room {RoomId = "anubis", RoomName = "Anubis", AreVotesRevealed = false, Stories = new List<string>()},
-                new Room {RoomId = "geb", RoomName = "Geb", AreVotesRevealed = false, Stories = new List<string>()},
-                new Room {RoomId = "horus", RoomName = "Horus", AreVotesRevealed = false, Stories = new List<string>()},
-                new Room {RoomId = "maat", RoomName = "Maat", AreVotesRevealed = false, Stories = new List<string>()},
-                new Room {RoomId = "osiris", RoomName = "Osiris", AreVotesRevealed = false, Stories = new List<string>()},
-                new Room {RoomId = "seth", RoomName = "Seth", AreVotesRevealed = false, Stories = new List<string>()},
+                new Room {RoomId = "anubis", RoomName = "Anubis", AreVotesRevealed = false, Stories = new List<string>(), Phase = new Phase {PhaseName = "backlog"}},
+                new Room {RoomId = "geb", RoomName = "Geb", AreVotesRevealed = false, Stories = new List<string>(), Phase = new Phase {PhaseName = "backlog"}},
+                new Room {RoomId = "horus", RoomName = "Horus", AreVotesRevealed = false, Stories = new List<string>(), Phase = new Phase {PhaseName = "backlog"}},
+                new Room {RoomId = "maat", RoomName = "Maat", AreVotesRevealed = false, Stories = new List<string>(), Phase = new Phase {PhaseName = "backlog"}},
+                new Room {RoomId = "osiris", RoomName = "Osiris", AreVotesRevealed = false, Stories = new List<string>(), Phase = new Phase {PhaseName = "backlog"}},
+                new Room {RoomId = "seth", RoomName = "Seth", AreVotesRevealed = false, Stories = new List<string>(), Phase = new Phase {PhaseName = "backlog"}},
             };
         }
 

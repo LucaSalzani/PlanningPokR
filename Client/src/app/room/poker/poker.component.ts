@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { CommunicationHubService, StoryService } from 'src/app/core/services';
+import { Observable } from 'rxjs';
+import { ParticipantsStateUpdate } from 'src/app/core';
 
 @Component({
   selector: 'app-poker',
@@ -9,8 +11,8 @@ import { CommunicationHubService, StoryService } from 'src/app/core/services';
   styleUrls: ['./poker.component.scss']
 })
 export class PokerComponent implements OnInit {
-  areVotesRevealed: boolean;
   acceptedVote: number;
+  participantsStateUpdate$: Observable<ParticipantsStateUpdate>;
 
   private roomId: string;
   private storyId: string;
@@ -18,30 +20,31 @@ export class PokerComponent implements OnInit {
   constructor(
     private communicationHubService: CommunicationHubService,
     private route: ActivatedRoute,
-    private storyService: StoryService) { }
+    private storyService: StoryService) {
+      this.participantsStateUpdate$ = this.communicationHubService.getParticipantsStateUpdate();
+    }
 
   ngOnInit(): void {
     this.roomId = this.route.snapshot.paramMap.get('roomid');
     this.storyId = this.route.snapshot.queryParamMap.get('storyId');
-    this.areVotesRevealed = false;
   }
 
-  async selectValue(value: number) { // TODO: Set this in service??
+  async selectValue(value: number) {
     await this.communicationHubService.selectValueAsync(value, this.roomId);
   }
 
   async revealVotes() {
-    this.areVotesRevealed = true;
-    this.acceptedVote = 5; // TODO: Get Math.Max()
+    this.acceptedVote = 5; // TODO: Get Math.Max() and distribute to clients
     await this.communicationHubService.revealVotes(this.roomId);
   }
 
-  resetVotes() {
-    console.log('To implement'); // TODO: Implement
+  async resetVotes() {
+    await this.communicationHubService.resetVotes(this.roomId);
   }
 
-  acceptVote() {
-    this.storyService.setAcceptedVote(this.storyId, this.acceptedVote);
-    console.log('To implement'); // TODO: Navigate back here for all
+  async acceptVote() {
+    this.storyService.setAcceptedVote(this.storyId, this.acceptedVote); // TODO: set accepted vote for all clients
+    this.resetVotes();
+    await this.communicationHubService.navigate(this.roomId, 'backlog');
   }
 }

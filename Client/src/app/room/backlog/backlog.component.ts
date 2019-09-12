@@ -1,7 +1,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 
-import { StoryService } from './../../core/services';
+import { StoryService, CommunicationHubService } from './../../core/services';
 import { Story } from 'src/app/core/models';
 
 @Component({
@@ -13,7 +13,10 @@ export class BacklogComponent implements OnInit {
   storyList: Story[];
   roomId: string;
 
-  constructor(private storyService: StoryService, private route: ActivatedRoute, private router: Router) {
+  constructor(
+    private storyService: StoryService,
+    private route: ActivatedRoute,
+    private communicationHubService: CommunicationHubService) {
     this.storyList = [];
   }
 
@@ -22,8 +25,8 @@ export class BacklogComponent implements OnInit {
     this.storyList = this.storyService.getStoriesByRoom(this.roomId);
   }
 
-  startVoting(storyId: string) {
-    this.router.navigate(['../poker'], { relativeTo: this.route, queryParams: { storyId } }); // TODO: Navigate for all
+  async startVoting(storyId: string) {
+    await this.communicationHubService.navigate(this.roomId, 'poker', storyId);
   }
 
 }
