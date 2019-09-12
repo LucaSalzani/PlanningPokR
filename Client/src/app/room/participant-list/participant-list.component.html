@@ -1,8 +1,6 @@
-<p>Votes are revealed: {{ (participantsStateUpdate$ | async).areVotesRevealed }}</p>
-<ul>
-  <li *ngFor="let participant of (participantsStateUpdate$ | async).participants">
-    Participant: {{ participant.name }},
-    Has voted: {{ participant.hasVoted }}
-    <span *ngIf="(participantsStateUpdate$ | async).areVotesRevealed">, Vote: {{participant.vote || '?'}}</span>
-  </li>
-</ul>
+<div *ngFor="let participant of (participantsStateUpdate$ | async).participants">
+  <i class="fas fa-user"></i>
+  {{ participant.name }},
+  Has voted: {{ participant.hasVoted }}
+  <span *ngIf="(participantsStateUpdate$ | async).areVotesRevealed">, Vote: {{participant.vote || '?'}}</span>
+</div>

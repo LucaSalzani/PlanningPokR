@@ -1,8 +1,10 @@
-<div class="row align-items-center mb-2" *ngFor="let story of storyList">
-  <div class="col-2">
-    {{story.storyId}}: {{story.title}} {{story.acceptedVote ? story.acceptedVote : ''}}
+<div class="app-row" *ngFor="let story of storyList">
+  <div class="story-details">
+    {{story.storyId}}: {{story.title}}
   </div>
-  <div class="col-auto">
-    <button type="button" class="btn btn-primary" (click)="startVoting(story.storyId)">Vote</button>
+  <div class="vote-button">
+    <button type="button" [className]="story.acceptedVote ? 'btn btn-success' : 'btn btn-primary'" (click)="startVoting(story.storyId)">
+      {{story.acceptedVote ? story.acceptedVote : 'Vote'}}
+    </button>
   </div>
 </div>

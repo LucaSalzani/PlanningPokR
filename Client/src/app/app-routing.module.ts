@@ -17,6 +17,7 @@ const routes: Routes = [
       { path: '', redirectTo: 'backlog', pathMatch: 'full' }
     ]
   },
+  { path: '', redirectTo: 'lobby', pathMatch: 'full' }
 ];
 
 @NgModule({

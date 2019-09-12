@@ -1,0 +1,26 @@
+.vote-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  margin: 10px 0;
+
+  .vote-button {
+    height: 5em;
+    font-size: 1.25em;
+    flex-basis: 15%;
+  }
+}
+
+.workflow-row {
+  display: flex;
+
+  .btn {
+    margin-right: 1em;
+  }
+}
+
+.modal-description {
+  margin-left: 0.5em;
+  margin-top: 1em;
+}

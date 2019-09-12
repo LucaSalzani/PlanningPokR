@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Observable } from 'rxjs';
 
 import { CommunicationHubService, StoryService } from 'src/app/core/services';
-import { Observable } from 'rxjs';
 import { ParticipantsStateUpdate } from 'src/app/core';
 
 @Component({
@@ -11,16 +12,16 @@ import { ParticipantsStateUpdate } from 'src/app/core';
   styleUrls: ['./poker.component.scss']
 })
 export class PokerComponent implements OnInit {
-  acceptedVote: number;
   participantsStateUpdate$: Observable<ParticipantsStateUpdate>;
+  storyId: string;
 
   private roomId: string;
-  private storyId: string;
 
   constructor(
     private communicationHubService: CommunicationHubService,
     private route: ActivatedRoute,
-    private storyService: StoryService) {
+    private storyService: StoryService,
+    private modalService: NgbModal) {
       this.participantsStateUpdate$ = this.communicationHubService.getParticipantsStateUpdate();
     }
 
@@ -34,7 +35,6 @@ export class PokerComponent implements OnInit {
   }
 
   async revealVotes() {
-    this.acceptedVote = 5; // TODO: Get Math.Max() and distribute to clients
     await this.communicationHubService.revealVotes(this.roomId);
   }
 
@@ -42,9 +42,15 @@ export class PokerComponent implements OnInit {
     await this.communicationHubService.resetVotes(this.roomId);
   }
 
-  async acceptVote() {
-    this.storyService.setAcceptedVote(this.storyId, this.acceptedVote); // TODO: set accepted vote for all clients
+  async acceptVote(acceptedVote: number) {
+    this.storyService.setAcceptedVote(this.storyId, acceptedVote); // TODO: set accepted vote for all clients
     this.resetVotes();
     await this.communicationHubService.navigate(this.roomId, 'backlog');
+  }
+
+  openModal(content: any) {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then(async (result: number) => {
+      await this.acceptVote(result);
+    }, () => {});
   }
 }

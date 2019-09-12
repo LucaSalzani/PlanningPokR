@@ -1,19 +1,29 @@
-<p>poker works!</p>
-<a [routerLink]="['../backlog']">Nav to backlog</a>
-<div class="row">
-  <button type="button" class="btn btn-primary" (click)="selectValue(1)">1</button>
-  <button type="button" class="btn btn-primary" (click)="selectValue(2)">2</button>
-  <button type="button" class="btn btn-primary" (click)="selectValue(3)">3</button>
-  <button type="button" class="btn btn-primary" (click)="selectValue(5)">5</button>
-  <button type="button" class="btn btn-primary" (click)="selectValue(8)">8</button>
-  <button type="button" class="btn btn-primary" (click)="selectValue(13)">13</button>
+<h3>Vote for story {{storyId}}</h3>
+<div class="vote-row">
+  <button type="button" class="btn btn-primary vote-button" (click)="selectValue(1)">1</button>
+  <button type="button" class="btn btn-primary vote-button" (click)="selectValue(2)">2</button>
+  <button type="button" class="btn btn-primary vote-button" (click)="selectValue(3)">3</button>
+  <button type="button" class="btn btn-primary vote-button" (click)="selectValue(5)">5</button>
+  <button type="button" class="btn btn-primary vote-button" (click)="selectValue(8)">8</button>
+  <button type="button" class="btn btn-primary vote-button" (click)="selectValue(13)">13</button>
 </div>
-<div class="row">
+<div class="workflow-row" *ngIf="!(participantsStateUpdate$ | async).areVotesRevealed">
   <button type="button" class="btn btn-primary" (click)="revealVotes()">Reveal</button>
+  <button type="button" class="btn btn-secondary" [routerLink]="['../backlog']">Abort</button>
 </div>
-<div class="row" *ngIf="(participantsStateUpdate$ | async).areVotesRevealed">
-  <button type="button" class="btn btn-primary" (click)="resetVotes()">Revote</button>
-  <label for="acceptedVote">Accepted Vote</label>
-  <input type="number" class="form-control" id="acceptedVote" [(ngModel)]="acceptedVote">
-  <button type="button" class="btn btn-primary" (click)="acceptVote()">Accept Vote</button>
+<div class="workflow-row" *ngIf="(participantsStateUpdate$ | async).areVotesRevealed">
+  <button type="button" class="btn btn-primary" (click)="openModal(content)">Continue</button>
+  <button type="button" class="btn btn-secondary" (click)="resetVotes()">Revote</button>
 </div>
+
+<ng-template #content let-modal>
+  <p class="modal-description">Choose the accepted estimation</p>
+  <div class="vote-row">
+    <button type="button" class="btn btn-primary vote-button" (click)="modal.close(1)">1</button>
+    <button type="button" class="btn btn-primary vote-button" (click)="modal.close(2)">2</button>
+    <button type="button" class="btn btn-primary vote-button" (click)="modal.close(3)">3</button>
+    <button type="button" class="btn btn-primary vote-button" (click)="modal.close(5)">5</button>
+    <button type="button" class="btn btn-primary vote-button" (click)="modal.close(8)">8</button>
+    <button type="button" class="btn btn-primary vote-button" (click)="modal.close(13)">13</button>
+  </div>
+</ng-template>

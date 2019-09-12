@@ -1,0 +1,23 @@
+.app-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: whitesmoke;
+  border: 2px solid lightgrey;
+  padding: 10px 0;
+  margin: 10px 0;
+  border-radius: 5px;
+}
+
+.story-details {
+  margin-left: 5%;
+}
+
+.vote-button {
+  margin-right: 5%;
+}
+
+.btn {
+  padding: .375rem 2rem;
+  width: 96px;
+}

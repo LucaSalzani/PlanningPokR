@@ -1,11 +1,14 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<div class="container center">
-  <h1>
-    Welcome to PlanningPokR
-  </h1>
-  <p><a [routerLink]="['/lobby']">Go to lobby</a></p>
+<div class="header">
+  <div [class.spacer]="!isInRoom">
+    <button class="btn btn-outline-light" [routerLink]="['/lobby']"><i class="fa fa-arrow-left"></i> Lobby</button>
+  </div>
+  <div>PlanningPokr</div>
+  <div class="spacer">
+    <button class="btn btn-outline-light"><i class="fa fa-arrow-left"></i> Lobby</button>
+  </div>
 </div>
 
-<div class="container">
+<div class="main-content">
   <router-outlet></router-outlet>
 </div>

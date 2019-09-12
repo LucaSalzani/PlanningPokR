@@ -1,0 +1,20 @@
+.main-content {
+  margin-left: 1em;
+  margin-right: 1em;
+}
+
+.header {
+  display: flex;
+  background: #985B9C;
+  color: white;
+  font-size: 1.5em;
+  height: 60px;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1em;
+  padding: 0 0.25em;
+
+  .spacer {
+    visibility: hidden;
+  }
+}

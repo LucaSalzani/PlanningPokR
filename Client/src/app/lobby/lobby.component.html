@@ -1,8 +1,9 @@
-<div class="row align-items-center mb-2" *ngFor="let room of rooms">
-  <div class="col-2">
+<h3>Join a room</h3>
+<div class="app-row" *ngFor="let room of rooms">
+  <div class="room-name">
     {{room.roomName}}
   </div>
-  <div class="col-auto">
+  <div class="join-button">
     <button type="button" class="btn btn-primary" (click)="joinRoom(room.roomId)">Join</button>
   </div>
 </div>
