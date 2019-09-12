@@ -10,20 +10,32 @@ namespace Server.Repositories
 
         public RoomRepository()
         {
+            var anubisStories = new List<Story>()
+            {
+                new Story {StoryId = "DIAS-1", Title = "Story 1", RoomId = "anubis", AcceptedVote = null},
+                new Story {StoryId = "DIAS-2", Title = "Story 2", RoomId = "anubis", AcceptedVote = null},
+                new Story {StoryId = "DIAS-3", Title = "Story 3", RoomId = "anubis", AcceptedVote = null},
+            };
+
+            var horusStories = new List<Story>()
+            {
+                new Story {StoryId = "DIAS-4", Title = "Story 4", RoomId = "horus", AcceptedVote = null},
+            };
+
             rooms = new List<Room>
             {
-                new Room {RoomId = "anubis", RoomName = "Anubis", AreVotesRevealed = false, Stories = new List<string>(), Phase = new Phase {PhaseName = "backlog"}},
-                new Room {RoomId = "geb", RoomName = "Geb", AreVotesRevealed = false, Stories = new List<string>(), Phase = new Phase {PhaseName = "backlog"}},
-                new Room {RoomId = "horus", RoomName = "Horus", AreVotesRevealed = false, Stories = new List<string>(), Phase = new Phase {PhaseName = "backlog"}},
-                new Room {RoomId = "maat", RoomName = "Maat", AreVotesRevealed = false, Stories = new List<string>(), Phase = new Phase {PhaseName = "backlog"}},
-                new Room {RoomId = "osiris", RoomName = "Osiris", AreVotesRevealed = false, Stories = new List<string>(), Phase = new Phase {PhaseName = "backlog"}},
-                new Room {RoomId = "seth", RoomName = "Seth", AreVotesRevealed = false, Stories = new List<string>(), Phase = new Phase {PhaseName = "backlog"}},
+                new Room {RoomId = "anubis", RoomName = "Anubis", AreVotesRevealed = false, Stories = anubisStories, Phase = new Phase {PhaseName = "backlog"}},
+                new Room {RoomId = "geb", RoomName = "Geb", AreVotesRevealed = false, Stories = new List<Story>(), Phase = new Phase {PhaseName = "backlog"}},
+                new Room {RoomId = "horus", RoomName = "Horus", AreVotesRevealed = false, Stories = horusStories, Phase = new Phase {PhaseName = "backlog"}},
+                new Room {RoomId = "maat", RoomName = "Maat", AreVotesRevealed = false, Stories = new List<Story>(), Phase = new Phase {PhaseName = "backlog"}},
+                new Room {RoomId = "osiris", RoomName = "Osiris", AreVotesRevealed = false, Stories = new List<Story>(), Phase = new Phase {PhaseName = "backlog"}},
+                new Room {RoomId = "seth", RoomName = "Seth", AreVotesRevealed = false, Stories = new List<Story>(), Phase = new Phase {PhaseName = "backlog"}},
             };
         }
 
         public IEnumerable<Room> GetAll()
         {
-            throw new System.NotImplementedException();
+            return rooms;
         }
 
         public Room Get(string roomId)

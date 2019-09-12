@@ -4,7 +4,7 @@ import { Observable, BehaviorSubject, Subject } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import { AuthService } from './../../auth/auth.service';
-import { ParticipantsStateUpdate, NavigationUpdate } from './../models';
+import { ParticipantsStateUpdate, NavigationUpdate, StoryStateUpdate } from './../models';
 import { CommunicationHubMethod } from './communication-hub-method.enum';
 
 @Injectable({
@@ -14,10 +14,12 @@ export class CommunicationHubService {
   private hubConnection: HubConnection;
   private participantsStateUpdate$: BehaviorSubject<ParticipantsStateUpdate>;
   private navigationUpdate$: Subject<NavigationUpdate>;
+  private storyStateUpdate$: BehaviorSubject<StoryStateUpdate>;
 
   constructor(private authService: AuthService) {
     this.participantsStateUpdate$ = new BehaviorSubject<ParticipantsStateUpdate>({ participants: [], areVotesRevealed: false });
     this.navigationUpdate$ = new Subject<NavigationUpdate>();
+    this.storyStateUpdate$ = new BehaviorSubject<StoryStateUpdate>({stories: []});
 
     this.hubConnection = new HubConnectionBuilder().withUrl(environment.backendBaseUrl + environment.communicationHubPath, {
       accessTokenFactory: () => authService.jwt
@@ -32,6 +34,7 @@ export class CommunicationHubService {
 
     this.hubConnection.on(CommunicationHubMethod.ParticipantsStateUpdate, payload => this.participantsStateUpdate$.next(payload));
     this.hubConnection.on(CommunicationHubMethod.NavigationUpdate, payload => this.navigationUpdate$.next(payload));
+    this.hubConnection.on(CommunicationHubMethod.StoryStateUpdate, payload => this.storyStateUpdate$.next(payload));
   }
 
   public isConnected() {
@@ -44,6 +47,10 @@ export class CommunicationHubService {
 
   public getNavigationUpdate(): Observable<NavigationUpdate> {
     return this.navigationUpdate$.asObservable();
+  }
+
+  public getStoryStateUpdate(): Observable<StoryStateUpdate> {
+    return this.storyStateUpdate$.asObservable();
   }
 
   public async enterRoomAsync(roomId: string) {
@@ -64,6 +71,10 @@ export class CommunicationHubService {
 
   public async resetVotes(roomId: string) {
     await this.hubConnection.invoke(CommunicationHubMethod.ResetVotes, roomId);
+  }
+
+  public async setAcceptedVote(roomId: string, storyId: string, acceptedVote: number) {
+    await this.hubConnection.invoke(CommunicationHubMethod.SetAcceptedVote, roomId, storyId, acceptedVote);
   }
 
   public async navigate(roomId: string, phase: 'poker' | 'backlog', storyId?: string) {

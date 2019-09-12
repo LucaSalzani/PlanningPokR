@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
 
-import { CommunicationHubService, StoryService } from 'src/app/core/services';
+import { CommunicationHubService } from 'src/app/core/services';
 import { ParticipantsStateUpdate } from 'src/app/core';
 
 @Component({
@@ -20,7 +20,6 @@ export class PokerComponent implements OnInit {
   constructor(
     private communicationHubService: CommunicationHubService,
     private route: ActivatedRoute,
-    private storyService: StoryService,
     private modalService: NgbModal) {
       this.participantsStateUpdate$ = this.communicationHubService.getParticipantsStateUpdate();
     }
@@ -43,8 +42,8 @@ export class PokerComponent implements OnInit {
   }
 
   async acceptVote(acceptedVote: number) {
-    this.storyService.setAcceptedVote(this.storyId, acceptedVote); // TODO: set accepted vote for all clients
-    this.resetVotes();
+    await this.communicationHubService.setAcceptedVote(this.roomId, this.storyId, acceptedVote); // TODO: set accepted vote for all clients
+    await this.resetVotes();
     await this.communicationHubService.navigate(this.roomId, 'backlog');
   }
 

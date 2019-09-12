@@ -1,4 +1,4 @@
-<div class="app-row" *ngFor="let story of storyList">
+<div class="app-row" *ngFor="let story of (storyList$ | async)">
   <div class="story-details">
     {{story.storyId}}: {{story.title}}
   </div>

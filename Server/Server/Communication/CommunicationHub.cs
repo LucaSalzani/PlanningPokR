@@ -51,6 +51,7 @@ namespace Server.Communication
 
             await SendParticipantsStateUpdate(roomId);
             await SendNavigationUpdate(roomId);
+            await SendStoryStateUpdate();
         }
 
         [HubMethodName("leaveRoom")]
@@ -110,6 +111,21 @@ namespace Server.Communication
             await SendParticipantsStateUpdate(roomId);
         }
 
+        [HubMethodName("setAcceptedVote")]
+        public async Task SetAcceptedVote(string roomId, string storyId, int acceptedVote)
+        {
+            var room = roomRepository.Get(roomId);
+            if (room?.Stories.FirstOrDefault(s => s.StoryId == storyId) == null)
+            {
+                return;
+            }
+            room.Stories.SingleOrDefault(s => s.StoryId == storyId).AcceptedVote = acceptedVote;
+
+            roomRepository.Update(room);
+
+            await SendStoryStateUpdate();
+        }
+
         [HubMethodName("navigate")]
         public async Task Navigate(string roomId, string phase, string storyId)
         {
@@ -143,6 +159,17 @@ namespace Server.Communication
             };
 
             await Clients.Group(roomId).SendAsync("navigationUpdate", navigationStateUpdate);
+        }
+
+        private async Task SendStoryStateUpdate()
+        {
+            var stories = roomRepository.GetAll().SelectMany(r => r.Stories);
+            var storyStateUpdate = new StoryStateUpdate
+            {
+                Stories = stories.ToList(),
+            };
+
+            await Clients.All.SendAsync("storyStateUpdate", storyStateUpdate);
         }
 
         private ParticipantExternalDto MapParticipant(Participant participant, bool areVotesRevealed)

@@ -8,7 +8,7 @@ namespace Server.Models
 
         public string RoomName { get; set; }
 
-        public List<string> Stories { get; set; }
+        public List<Story> Stories { get; set; }
 
         public bool AreVotesRevealed { get; set; }
 

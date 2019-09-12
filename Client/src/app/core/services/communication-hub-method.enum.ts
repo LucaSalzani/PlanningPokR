@@ -7,4 +7,6 @@ export enum CommunicationHubMethod {
   ResetVotes = 'resetVotes',
   NavigationUpdate = 'navigationUpdate',
   ParticipantsStateUpdate = 'participantsStateUpdate',
+  StoryStateUpdate = 'storyStateUpdate',
+  SetAcceptedVote = 'setAcceptedVote',
 }
