@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@aspnet/signalr';
+import { HubConnection, HubConnectionBuilder, HubConnectionState, HttpError } from '@aspnet/signalr';
 import { Observable, BehaviorSubject, Subject } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
@@ -30,7 +30,12 @@ export class CommunicationHubService {
     await this.hubConnection
       .start()
       .then(() => console.log('Connection started!'))
-      .catch(err => console.log('Error while establishing connection :(', err));
+      .catch(async (err: Error) => {
+        console.log('An error occurred', err);
+        if (err instanceof HttpError && err.statusCode === 401) {
+          await this.authService.logout();
+        }
+      });
 
     this.hubConnection.on(CommunicationHubMethod.ParticipantsStateUpdate, payload => this.participantsStateUpdate$.next(payload));
     this.hubConnection.on(CommunicationHubMethod.NavigationUpdate, payload => this.navigationUpdate$.next(payload));

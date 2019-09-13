@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { environment } from './../../environments/environment';
@@ -12,7 +13,7 @@ export class AuthService {
   // store the URL so we can redirect after logging in
   redirectUrl: string;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private router: Router) {
     this.jwt = localStorage.getItem('jwt');
     this.isLoggedIn = !!this.jwt; // TODO: Check validity
   }
@@ -31,7 +32,10 @@ export class AuthService {
     });
   }
 
-  logout(): void {
+  async logout() {
     this.isLoggedIn = false;
+    this.jwt = undefined;
+    localStorage.removeItem('jwt');
+    await this.router.navigate(['/login']);
   }
 }

@@ -23,6 +23,6 @@ export class LobbyComponent {
   }
 
   joinRoom(roomId: string) {
-    this.router.navigateByUrl(`/room/${roomId}`);
+    this.router.navigateByUrl(`/room/${roomId}`); // TODO: Check async/await
   }
 }
