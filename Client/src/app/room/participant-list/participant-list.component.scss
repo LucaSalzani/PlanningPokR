@@ -14,3 +14,22 @@
 .not-voted-icon {
   color: #007bff;
 }
+
+.voting-result-number {
+  margin-left: 8px;
+  font-size: large;
+  border: 1px solid #985B9C;
+  color: #985B9C;
+  min-width: 32px;
+  border-radius: 8px;
+  padding-left: 8px;
+  padding-right: 8px;
+  text-align: center;
+  height: auto;
+  font-weight: bold;
+}
+
+.participant-container{
+  display: flex;
+  align-items: center;
+}
