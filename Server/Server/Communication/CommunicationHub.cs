@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -34,6 +35,13 @@ namespace Server.Communication
                 IsModerator = false,
             };
             participantRepository.Create(participant);
+        }
+
+        public override async Task OnDisconnectedAsync(Exception exception)
+        {
+            await base.OnDisconnectedAsync(exception);
+
+            await LeaveRoom();
         }
 
         [HubMethodName("enterRoom")]
