@@ -31,6 +31,7 @@ namespace Server.Communication
                 UserName = Context.User.Claims.Where(c => c.Type == ClaimTypes.Name).Select(c => c.Value).Single(),
                 ConnectionId = Context.ConnectionId,
                 Vote = null,
+                IsModerator = false,
             };
             participantRepository.Create(participant);
         }
@@ -44,6 +45,11 @@ namespace Server.Communication
             if (participant == null)
             {
                 return;
+            }
+
+            if (!participantRepository.GetAll().Any(p => p.RoomId == roomId))
+            {
+                participant.IsModerator = true;
             }
 
             participant.RoomId = roomId;
@@ -68,8 +74,17 @@ namespace Server.Communication
 
             var roomId = participant.RoomId;
             participant.RoomId = null;
+            participant.IsModerator = false;
             participantRepository.Update(participant);
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomId);
+
+            var remainingRoomParticipants = participantRepository.GetAll().Where(p => p.RoomId == roomId).ToList();
+            if (remainingRoomParticipants.Count() != 0 && remainingRoomParticipants.All(p => !p.IsModerator))
+            {
+                var newModerator = remainingRoomParticipants.First();
+                newModerator.IsModerator = true;
+                participantRepository.Update(newModerator);
+            }
 
             await SendParticipantsStateUpdate(roomId);
         }
@@ -188,6 +203,29 @@ namespace Server.Communication
             await SendNavigationUpdate(roomId);
         }
 
+        [HubMethodName("claimModerator")]
+        public async Task ClaimModerator(string roomId)
+        {
+            UpdateConnectionId();
+
+            var newModerator = participantRepository.GetById(Context.UserIdentifier);
+            var oldModerator = participantRepository.GetAll().SingleOrDefault(p => p.RoomId == roomId && p.IsModerator);
+
+            if (oldModerator != null && newModerator != null)
+            {
+                oldModerator.IsModerator = false;
+                participantRepository.Update(oldModerator);
+            }
+
+            if (newModerator != null)
+            {
+                newModerator.IsModerator = true;
+                participantRepository.Update(newModerator);
+            }
+
+            await SendParticipantsStateUpdate(roomId);
+        }
+
         private async Task SendParticipantsStateUpdate(string roomId)
         {
             var areVotesRevealed = roomRepository.Get(roomId).AreVotesRevealed;
@@ -242,6 +280,7 @@ namespace Server.Communication
                 Name = participant.UserName,
                 HasVoted = participant.Vote.HasValue,
                 Vote = areVotesRevealed ? participant.Vote : null,
+                IsModerator = participant.IsModerator,
             };
         }
     }

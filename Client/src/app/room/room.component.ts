@@ -37,6 +37,10 @@ export class RoomComponent implements OnInit, OnDestroy {
     }
   }
 
+  async claimModerator() {
+    await this.communicationHubService.claimModerator(this.roomId);
+  }
+
   async ngOnDestroy() {
     await this.communicationHubService.leaveRoomAsync();
     this.navigationUpdateSubscription.unsubscribe();

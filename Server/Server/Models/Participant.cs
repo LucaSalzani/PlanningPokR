@@ -11,5 +11,7 @@
         public string UserName { get; set; }
 
         public int? Vote { get; set; }
+
+        public bool IsModerator { get; set; }
     }
 }

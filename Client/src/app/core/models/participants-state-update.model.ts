@@ -8,4 +8,5 @@ export interface Participant {
   name: string;
   hasVoted: boolean;
   vote: number | null;
+  isModerator: boolean;
 }

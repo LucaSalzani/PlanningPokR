@@ -1,10 +1,12 @@
-import { Component, OnInit, TemplateRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { CommunicationHubService } from 'src/app/core/services';
 import { ParticipantsStateUpdate } from 'src/app/core';
+import { AuthService } from './../../auth/auth.service';
 
 @Component({
   selector: 'app-poker',
@@ -13,6 +15,8 @@ import { ParticipantsStateUpdate } from 'src/app/core';
 })
 export class PokerComponent implements OnInit {
   participantsStateUpdate$: Observable<ParticipantsStateUpdate>;
+  isModerator$: Observable<boolean>;
+  userId: string;
   storyId: string;
 
   private roomId: string;
@@ -20,11 +24,18 @@ export class PokerComponent implements OnInit {
   constructor(
     private communicationHubService: CommunicationHubService,
     private route: ActivatedRoute,
-    private modalService: NgbModal) {
+    private modalService: NgbModal,
+    authService: AuthService) {
       this.participantsStateUpdate$ = this.communicationHubService.getParticipantsStateUpdate();
+      this.userId = authService.getUserId();
     }
 
   ngOnInit(): void {
+    this.isModerator$ = this.participantsStateUpdate$.pipe(
+      map(update => {
+        const user = update.participants.find(p => p.userId === this.userId);
+        return user ? user.isModerator : false;
+      }));
     this.roomId = this.route.snapshot.paramMap.get('roomid');
     this.storyId = this.route.snapshot.queryParamMap.get('storyId');
   }

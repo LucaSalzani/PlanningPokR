@@ -94,6 +94,10 @@ export class CommunicationHubService {
     await this.hubConnection.invoke(CommunicationHubMethod.Navigate, roomId, phase, storyId);
   }
 
+  public async claimModerator(roomId: string) {
+    await this.hubConnection.invoke(CommunicationHubMethod.ClaimModerator, roomId);
+  }
+
   public disconnect() {
     this.hubConnection.stop();
   }

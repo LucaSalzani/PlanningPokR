@@ -8,6 +8,7 @@ export enum CommunicationHubMethod {
   SetAcceptedVote = 'setAcceptedVote',
   AddStory = 'addStory',
   DeleteStory = 'deleteStory',
+  ClaimModerator = 'claimModerator',
   NavigationUpdate = 'navigationUpdate',
   ParticipantsStateUpdate = 'participantsStateUpdate',
   StoryStateUpdate = 'storyStateUpdate',

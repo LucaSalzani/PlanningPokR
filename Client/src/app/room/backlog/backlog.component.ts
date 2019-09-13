@@ -2,9 +2,11 @@ import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { StoryService, CommunicationHubService } from './../../core/services';
 import { Story } from 'src/app/core/models';
+import { AuthService } from 'src/app/auth';
 
 @Component({
   selector: 'app-backlog',
@@ -13,6 +15,8 @@ import { Story } from 'src/app/core/models';
 })
 export class BacklogComponent implements OnInit {
   storyList$: Observable<Story[]>;
+  isModerator$: Observable<boolean>;
+  userId: string;
   roomId: string;
   newStoryId: string;
   newStoryTitle: string;
@@ -21,9 +25,18 @@ export class BacklogComponent implements OnInit {
     private storyService: StoryService,
     private route: ActivatedRoute,
     private communicationHubService: CommunicationHubService,
-    private modalService: NgbModal) { }
+    private modalService: NgbModal,
+    authService: AuthService) {
+      this.userId = authService.getUserId();
+    }
 
   ngOnInit() {
+    this.isModerator$ = this.communicationHubService.getParticipantsStateUpdate().pipe(
+      map(update => {
+        const user = update.participants.find(p => p.userId === this.userId);
+        return user ? user.isModerator : false;
+      }));
+
     this.roomId = this.route.snapshot.paramMap.get('roomid');
     this.storyList$ = this.storyService.getStoriesByRoom(this.roomId);
   }

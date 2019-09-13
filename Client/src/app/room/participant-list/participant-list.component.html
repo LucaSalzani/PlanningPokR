@@ -1,5 +1,6 @@
 <div *ngFor="let participant of (participantsStateUpdate$ | async).participants" class="participant-container">
-  <i class="fas fa-user bullet-point"></i>
+  <i class="fas fa-user bullet-point" *ngIf="!participant.isModerator"></i>
+  <i class="fas fa-user-tie bullet-point" *ngIf="participant.isModerator"></i>
   <span class="user-name">{{ participant.name }}</span>
   <span *ngIf="state === 'poker'" class="participant-container">
     <span *ngIf="participant.hasVoted"><i class="fas fa-vote-yea voted-icon"></i></span>

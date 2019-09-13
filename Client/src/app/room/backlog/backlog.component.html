@@ -1,5 +1,7 @@
 <div class="action-row">
-  <button type="button" class="btn btn-primary wide-btn" (click)="openNewStoryDialog(content)"><i class="fas fa-plus"></i> Add a new Story</button>
+  <button type="button" class="btn btn-primary wide-btn" (click)="openNewStoryDialog(content)" [disabled]="!(isModerator$ | async)">
+    <i class="fas fa-plus"></i> Add a new Story
+  </button>
 </div>
 <div class="app-row" *ngFor="let story of (storyList$ | async)">
   <div class="story-details">
@@ -7,10 +9,10 @@
       <div class="story-title-label">{{story.title}}</div>
   </div>
   <div class="action-buttons">
-    <button type="button" [className]="story.acceptedVote ? 'btn btn-success wide-btn' : 'btn btn-primary wide-btn'" (click)="startVoting(story.storyId)">
+    <button type="button" [className]="story.acceptedVote ? 'btn btn-success wide-btn' : 'btn btn-primary wide-btn'" (click)="startVoting(story.storyId)" [disabled]="!(isModerator$ | async)">
       {{story.acceptedVote ? story.acceptedVote : 'Vote'}}
     </button>
-    <button type="button" class="btn btn-outline-danger thin-btn" (click)="deleteStory(story.storyId)">
+    <button type="button" class="btn btn-outline-danger thin-btn" (click)="deleteStory(story.storyId)" [disabled]="!(isModerator$ | async)">
       <i class="fas fa-trash"></i>
     </button>
   </div>
