@@ -1,9 +1,10 @@
 <div *ngFor="let participant of (participantsStateUpdate$ | async).participants">
-  <i class="fas fa-user"></i>
+  <i class="fas fa-user bullet-point"></i>
+  <span class="user-name">{{ participant.name }}</span>
   <span *ngIf="state === 'poker'">
-    <span *ngIf="participant.hasVoted"><i class="fas fa-vote-yea"></i></span>
-    <span *ngIf="!participant.hasVoted"><i class="fas fa-hourglass-half"></i></span>
+    <span *ngIf="participant.hasVoted"><i class="fas fa-vote-yea voted-icon"></i></span>
+    <span *ngIf="!participant.hasVoted"><i class="fas fa-hourglass-half not-voted-icon"></i></span>
     <span *ngIf="(participantsStateUpdate$ | async).areVotesRevealed">, Vote: {{participant.vote || '?'}}</span>
   </span>
-  {{ participant.name }}
+
 </div>
