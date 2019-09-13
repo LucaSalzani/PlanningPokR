@@ -133,6 +133,49 @@ namespace Server.Communication
             await SendStoryStateUpdate();
         }
 
+        [HubMethodName("addStory")]
+        public async Task AddStory(string roomId, string storyId, string title)
+        {
+            UpdateConnectionId();
+            var room = roomRepository.Get(roomId);
+            if (room == null || room.Stories.FirstOrDefault(s => s.StoryId == storyId) != null)
+            {
+                return;
+            }
+
+            var story = new Story
+            {
+                RoomId = roomId,
+                StoryId = storyId,
+                Title = title,
+                AcceptedVote = null,
+            };
+
+            room.Stories.Add(story);
+
+            roomRepository.Update(room);
+
+            await SendStoryStateUpdate();
+        }
+
+        [HubMethodName("deleteStory")]
+        public async Task DeleteStory(string roomId, string storyId)
+        {
+            UpdateConnectionId();
+            var room = roomRepository.Get(roomId);
+            if (room == null || room.Stories.FirstOrDefault(s => s.StoryId == storyId) == null)
+            {
+                return;
+            }
+
+            room.Stories.RemoveAll(s => s.StoryId == storyId);
+
+            roomRepository.Update(room);
+
+            await SendStoryStateUpdate();
+        }
+
+
         [HubMethodName("navigate")]
         public async Task Navigate(string roomId, string phase, string storyId)
         {

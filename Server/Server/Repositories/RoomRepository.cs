@@ -12,8 +12,8 @@ namespace Server.Repositories
         {
             var anubisStories = new List<Story>()
             {
-                new Story {StoryId = "DIAS-1", Title = "Story 1", RoomId = "anubis", AcceptedVote = null},
-                new Story {StoryId = "DIAS-2", Title = "Story 2", RoomId = "anubis", AcceptedVote = null},
+                new Story {StoryId = "DIAS-1", Title = "Story 1 with a medium title", RoomId = "anubis", AcceptedVote = null},
+                new Story {StoryId = "DIAS-2", Title = "Story 2 with a quite big title. why does someone even write such a big title anyways?", RoomId = "anubis", AcceptedVote = null},
                 new Story {StoryId = "DIAS-3", Title = "Story 3", RoomId = "anubis", AcceptedVote = null},
             };
 

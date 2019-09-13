@@ -7,17 +7,32 @@
   padding: 10px 0;
   margin: 10px 0;
   border-radius: 5px;
+
+  .wide-btn {
+    padding: .375rem 2rem;
+    width: 96px;
+  }
+
+  .thin-btn {
+    margin-left: 12px;
+    border: 0;
+  }
+
+  .story-title-label {
+    font-size: smaller;
+  }
 }
 
 .story-details {
   margin-left: 5%;
 }
 
-.vote-button {
-  margin-right: 5%;
+.action-buttons {
+  display: flex;
+  margin-right: 1%;
 }
 
-.btn {
-  padding: .375rem 2rem;
-  width: 96px;
+.action-row {
+  display: flex;
+  justify-content: flex-end;
 }

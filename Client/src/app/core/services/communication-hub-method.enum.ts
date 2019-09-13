@@ -5,8 +5,10 @@ export enum CommunicationHubMethod {
   RevealVotes = 'revealVotes',
   Navigate = 'navigate',
   ResetVotes = 'resetVotes',
+  SetAcceptedVote = 'setAcceptedVote',
+  AddStory = 'addStory',
+  DeleteStory = 'deleteStory',
   NavigationUpdate = 'navigationUpdate',
   ParticipantsStateUpdate = 'participantsStateUpdate',
   StoryStateUpdate = 'storyStateUpdate',
-  SetAcceptedVote = 'setAcceptedVote',
 }

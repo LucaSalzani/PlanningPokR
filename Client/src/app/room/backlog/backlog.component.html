@@ -1,10 +1,39 @@
+<div class="action-row">
+  <button type="button" class="btn btn-primary wide-btn" (click)="openNewStoryDialog(content)"><i class="fas fa-plus"></i> Add a new Story</button>
+</div>
 <div class="app-row" *ngFor="let story of (storyList$ | async)">
   <div class="story-details">
-    {{story.storyId}}: {{story.title}}
+      <div class="story-id-label">{{story.storyId}}</div>
+      <div class="story-title-label">{{story.title}}</div>
   </div>
-  <div class="vote-button">
-    <button type="button" [className]="story.acceptedVote ? 'btn btn-success' : 'btn btn-primary'" (click)="startVoting(story.storyId)">
+  <div class="action-buttons">
+    <button type="button" [className]="story.acceptedVote ? 'btn btn-success wide-btn' : 'btn btn-primary wide-btn'" (click)="startVoting(story.storyId)">
       {{story.acceptedVote ? story.acceptedVote : 'Vote'}}
+    </button>
+    <button type="button" class="btn btn-outline-danger thin-btn" (click)="deleteStory(story.storyId)">
+      <i class="fas fa-trash"></i>
     </button>
   </div>
 </div>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Add new Story</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="form-group">
+        <label for="storyId">Story ID</label>
+        <input type="text" class="form-control" id="storyId" name="storyId" [(ngModel)]="newStoryId" ngbAutofocus>
+        <label for="storyTitle">Story Title</label>
+        <input type="text" class="form-control" id="storyTitle" name="storyTitle" [(ngModel)]="newStoryTitle">
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary wide-btn" (click)="modal.close()">Add</button>
+  </div>
+</ng-template>

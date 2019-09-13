@@ -77,6 +77,14 @@ export class CommunicationHubService {
     await this.hubConnection.invoke(CommunicationHubMethod.SetAcceptedVote, roomId, storyId, acceptedVote);
   }
 
+  public async addStory(roomId: string, storyId: string, title: string) {
+    await this.hubConnection.invoke(CommunicationHubMethod.AddStory, roomId, storyId, title);
+  }
+
+  public async deleteStory(roomId: string, storyId: string) {
+    await this.hubConnection.invoke(CommunicationHubMethod.DeleteStory, roomId, storyId);
+  }
+
   public async navigate(roomId: string, phase: 'poker' | 'backlog', storyId?: string) {
     await this.hubConnection.invoke(CommunicationHubMethod.Navigate, roomId, phase, storyId);
   }

@@ -4,6 +4,6 @@
   <span *ngIf="state === 'poker'">
     <span *ngIf="participant.hasVoted"><i class="fas fa-vote-yea voted-icon"></i></span>
     <span *ngIf="!participant.hasVoted"><i class="fas fa-hourglass-half not-voted-icon"></i></span>
-    <span *ngIf="(participantsStateUpdate$ | async).areVotesRevealed">, Vote: {{participant.vote || '?'}}</span>
+    <span *ngIf="(participantsStateUpdate$ | async).areVotesRevealed"> Vote: {{participant.vote || '?'}}</span>
   </span>
 </div>
