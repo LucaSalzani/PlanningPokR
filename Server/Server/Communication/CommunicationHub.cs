@@ -62,7 +62,6 @@ namespace Server.Communication
             await base.OnDisconnectedAsync(exception);
             
             logger.LogDebug(exception, $"Client {Context.UserIdentifier} disconnected");
-            //await LeaveRoom();
         }
 
         [HubMethodName("enterRoom")]

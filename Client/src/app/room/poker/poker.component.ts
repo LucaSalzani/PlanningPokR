@@ -68,4 +68,8 @@ export class PokerComponent implements OnInit {
       await this.acceptVote(result);
     }, () => {});
   }
+
+  disconnect() { // TODO: Remove
+    this.communicationHubService.disconnect();
+  }
 }

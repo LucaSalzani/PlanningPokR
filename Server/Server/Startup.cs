@@ -36,7 +36,7 @@ namespace Server
             });
             services.Configure<ApplicationConfiguration>(Configuration.GetSection("ApplicationConfiguration"));
 
-            var generator = new Private256BitKeyGenerator();
+            var generator = new PrivateKeyGenerator256Bit();
             services.AddSingleton<IPrivateKeyGenerator>(generator);
 
             services.AddAuthentication(options =>
