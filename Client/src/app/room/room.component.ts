@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 
@@ -41,7 +41,17 @@ export class RoomComponent implements OnInit, OnDestroy {
     await this.communicationHubService.claimModerator(this.roomId);
   }
 
+  stop() { // TODO: Remove
+    this.communicationHubService.disconnect();
+  }
+
   async ngOnDestroy() {
+    await this.communicationHubService.leaveRoomAsync();
+    this.navigationUpdateSubscription.unsubscribe();
+  }
+
+  @HostListener('window:beforeunload')
+  async onBrowserClose() {
     await this.communicationHubService.leaveRoomAsync();
     this.navigationUpdateSubscription.unsubscribe();
   }

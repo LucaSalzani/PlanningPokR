@@ -37,7 +37,24 @@ namespace Server.Communication
                 Vote = null,
                 IsModerator = false,
             };
-            participantRepository.Create(participant);
+
+            var oldParticipant = participantRepository.GetById(Context.UserIdentifier);
+
+            if (oldParticipant != null)
+            {
+                logger.LogInformation($"Attempting reconnect: {oldParticipant.UserName}, {oldParticipant.RoomId}");
+                if (!string.IsNullOrEmpty(oldParticipant.RoomId))
+                {
+                    await Groups.AddToGroupAsync(Context.ConnectionId, oldParticipant.RoomId);
+                    await SendParticipantsStateUpdate(oldParticipant.RoomId);
+                    await SendNavigationUpdate(oldParticipant.RoomId);
+                    await SendStoryStateUpdate();
+                }
+            }
+            else
+            {
+                participantRepository.Create(participant);
+            }
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)
@@ -45,7 +62,7 @@ namespace Server.Communication
             await base.OnDisconnectedAsync(exception);
             
             logger.LogDebug(exception, $"Client {Context.UserIdentifier} disconnected");
-            await LeaveRoom();
+            //await LeaveRoom();
         }
 
         [HubMethodName("enterRoom")]
@@ -279,7 +296,7 @@ namespace Server.Communication
             if (participant != null && participant.ConnectionId != Context.ConnectionId)
             {
                 participant.ConnectionId = Context.ConnectionId;
-                participant.Vote = null;
+                // participant.Vote = null; // TODO: Only reset if roomid changed
                 participantRepository.Update(participant);
             }
         }

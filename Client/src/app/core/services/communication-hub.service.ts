@@ -21,29 +21,11 @@ export class CommunicationHubService {
     this.navigationUpdate$ = new Subject<NavigationUpdate>();
     this.storyStateUpdate$ = new BehaviorSubject<StoryStateUpdate>({stories: []});
 
-    this.hubConnection = new HubConnectionBuilder()
-    .configureLogging(LogLevel.Trace)
-    .withUrl(environment.backendBaseUrl + environment.communicationHubPath, {
-      accessTokenFactory: () => authService.jwt
-    }).build();
+    this.hubConnection = this.createHubConnection();
   }
 
   public async connect() {
-    this.hubConnection.serverTimeoutInMilliseconds = 1200000;
-    this.hubConnection.keepAliveIntervalInMilliseconds = 600000;
-
-    await this.hubConnection
-      .start()
-      .then(() => console.log('Connection started!'))
-      .catch(async (err: Error) => {
-        console.log('An error occurred', err);
-        if (err instanceof HttpError && err.statusCode === 401) {
-          await this.authService.logout();
-        }
-      });
-
-    console.log('keepAliveIntervalInMilliseconds', this.hubConnection.keepAliveIntervalInMilliseconds);
-    console.log('serverTimeoutInMilliseconds', this.hubConnection.serverTimeoutInMilliseconds);
+    await this.startHubConnectionIfDisconnected();
 
     this.hubConnection.on(CommunicationHubMethod.ParticipantsStateUpdate, payload => this.participantsStateUpdate$.next(payload));
     this.hubConnection.on(CommunicationHubMethod.NavigationUpdate, payload => this.navigationUpdate$.next(payload));
@@ -68,47 +50,81 @@ export class CommunicationHubService {
   }
 
   public async enterRoomAsync(roomId: string) {
+    await this.startHubConnectionIfDisconnected();
     await this.hubConnection.invoke(CommunicationHubMethod.EnterRoom, roomId);
   }
 
   public async leaveRoomAsync() {
+    await this.startHubConnectionIfDisconnected();
     await this.hubConnection.invoke(CommunicationHubMethod.LeaveRoom);
   }
 
   public async selectValueAsync(value: number, roomId: string) {
+    await this.startHubConnectionIfDisconnected();
     await this.hubConnection.invoke(CommunicationHubMethod.SelectValue, value, roomId);
   }
 
   public async revealVotes(roomId: string) {
+    await this.startHubConnectionIfDisconnected();
     await this.hubConnection.invoke(CommunicationHubMethod.RevealVotes, roomId);
   }
 
   public async resetVotes(roomId: string) {
+    await this.startHubConnectionIfDisconnected();
     await this.hubConnection.invoke(CommunicationHubMethod.ResetVotes, roomId);
   }
 
   public async setAcceptedVote(roomId: string, storyId: string, acceptedVote: number) {
+    await this.startHubConnectionIfDisconnected();
     await this.hubConnection.invoke(CommunicationHubMethod.SetAcceptedVote, roomId, storyId, acceptedVote);
   }
 
   public async addStory(roomId: string, storyId: string, title: string) {
+    await this.startHubConnectionIfDisconnected();
     await this.hubConnection.invoke(CommunicationHubMethod.AddStory, roomId, storyId, title);
   }
 
   public async deleteStory(roomId: string, storyId: string) {
+    await this.startHubConnectionIfDisconnected();
     await this.hubConnection.invoke(CommunicationHubMethod.DeleteStory, roomId, storyId);
   }
 
   public async navigate(roomId: string, phase: 'poker' | 'backlog', storyId?: string) {
+    await this.startHubConnectionIfDisconnected();
     await this.hubConnection.invoke(CommunicationHubMethod.Navigate, roomId, phase, storyId);
   }
 
   public async claimModerator(roomId: string) {
+    await this.startHubConnectionIfDisconnected();
     await this.hubConnection.invoke(CommunicationHubMethod.ClaimModerator, roomId);
   }
 
   public disconnect() {
     this.hubConnection.stop();
+  }
+
+  private createHubConnection(): HubConnection {
+    return new HubConnectionBuilder()
+    .configureLogging(LogLevel.Trace)
+    .withUrl(environment.backendBaseUrl + environment.communicationHubPath, {
+      accessTokenFactory: () => this.authService.jwt
+    }).build();
+  }
+
+  private async startHubConnectionIfDisconnected() {
+    if (this.hubConnection.state === HubConnectionState.Connected) {
+      return;
+    }
+
+    await this.hubConnection
+    .start()
+    .then(() => console.log('Connection started!'))
+    .catch(async (err: Error) => {
+      console.log('An error occurred', err);
+      if (err instanceof HttpError && err.statusCode === 401) {
+        await this.authService.logout();
+      }
+    });
   }
 }
 
