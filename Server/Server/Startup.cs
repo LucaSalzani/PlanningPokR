@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -31,6 +32,7 @@ namespace Server
             services.AddSignalR().AddHubOptions<CommunicationHub>(hubOptions =>
             {
                 hubOptions.EnableDetailedErrors = true;
+                hubOptions.ClientTimeoutInterval = TimeSpan.FromMinutes(20);
 
             });
             services.Configure<ApplicationConfiguration>(Configuration.GetSection("ApplicationConfiguration"));
