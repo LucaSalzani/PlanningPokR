@@ -28,7 +28,11 @@ namespace Server
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddCors();
-            services.AddSignalR();
+            services.AddSignalR().AddHubOptions<CommunicationHub>(hubOptions =>
+            {
+                hubOptions.EnableDetailedErrors = true;
+
+            });
             services.Configure<ApplicationConfiguration>(Configuration.GetSection("ApplicationConfiguration"));
 
             var generator = new Private256BitKeyGenerator();

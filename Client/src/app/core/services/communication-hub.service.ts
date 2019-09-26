@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HubConnection, HubConnectionBuilder, HubConnectionState, HttpError } from '@aspnet/signalr';
+import { HubConnection, HubConnectionBuilder, HubConnectionState, HttpError, LogLevel } from '@aspnet/signalr';
 import { Observable, BehaviorSubject, Subject } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
@@ -21,7 +21,9 @@ export class CommunicationHubService {
     this.navigationUpdate$ = new Subject<NavigationUpdate>();
     this.storyStateUpdate$ = new BehaviorSubject<StoryStateUpdate>({stories: []});
 
-    this.hubConnection = new HubConnectionBuilder().withUrl(environment.backendBaseUrl + environment.communicationHubPath, {
+    this.hubConnection = new HubConnectionBuilder()
+    .configureLogging(LogLevel.Trace)
+    .withUrl(environment.backendBaseUrl + environment.communicationHubPath, {
       accessTokenFactory: () => authService.jwt
     }).build();
   }
@@ -37,9 +39,13 @@ export class CommunicationHubService {
         }
       });
 
+    console.log('keepAliveIntervalInMilliseconds', this.hubConnection.keepAliveIntervalInMilliseconds);
+    console.log('serverTimeoutInMilliseconds', this.hubConnection.serverTimeoutInMilliseconds);
+
     this.hubConnection.on(CommunicationHubMethod.ParticipantsStateUpdate, payload => this.participantsStateUpdate$.next(payload));
     this.hubConnection.on(CommunicationHubMethod.NavigationUpdate, payload => this.navigationUpdate$.next(payload));
     this.hubConnection.on(CommunicationHubMethod.StoryStateUpdate, payload => this.storyStateUpdate$.next(payload));
+    this.hubConnection.onclose(error => console.log('onclose', error));
   }
 
   public isConnected() {
