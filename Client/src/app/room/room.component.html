@@ -1,4 +1,12 @@
+<ngb-alert type="warning" [dismissible]="false" *ngIf="!communicationHubService.isConnected()" class="disconnect-alert">
+  <span>Disconnected from server</span>
+  <button type="button" class="btn btn-warning" (click)="reconnect()">
+    <i class="fas fa-retweet"></i> Reconnect
+  </button>
+</ngb-alert>
+
 <router-outlet></router-outlet>
+
 <div class="participant-list-container">
   <app-participant-list></app-participant-list>
 </div>

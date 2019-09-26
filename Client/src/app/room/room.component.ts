@@ -14,7 +14,7 @@ export class RoomComponent implements OnInit, OnDestroy {
   private navigationUpdateSubscription: Subscription;
   private roomId: string;
 
-  constructor(private communicationHubService: CommunicationHubService, private route: ActivatedRoute, private router: Router) {
+  constructor(public communicationHubService: CommunicationHubService, private route: ActivatedRoute, private router: Router) {
     this.navigationUpdate$ = this.communicationHubService.getNavigationUpdate();
     this.navigationUpdateSubscription = this.navigationUpdate$.subscribe( navUpdate => this.navigate(navUpdate));
   }
@@ -44,6 +44,10 @@ export class RoomComponent implements OnInit, OnDestroy {
   async ngOnDestroy() {
     await this.communicationHubService.leaveRoomAsync();
     this.navigationUpdateSubscription.unsubscribe();
+  }
+
+  async reconnect() {
+    await this.communicationHubService.connect();
   }
 
   @HostListener('window:beforeunload')
