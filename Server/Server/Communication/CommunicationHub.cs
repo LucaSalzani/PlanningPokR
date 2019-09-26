@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 using Server.Models;
 using Server.Repositories;
 
@@ -12,13 +13,15 @@ namespace Server.Communication
     [Authorize]
     public class CommunicationHub : Hub
     {
-        private IParticipantRepository participantRepository;
-        private IRoomRepository roomRepository;
+        private readonly IParticipantRepository participantRepository;
+        private readonly IRoomRepository roomRepository;
+        private readonly ILogger logger;
 
-        public CommunicationHub(IParticipantRepository participantRepository, IRoomRepository roomRepository)
+        public CommunicationHub(IParticipantRepository participantRepository, IRoomRepository roomRepository, ILogger<CommunicationHub> logger)
         {
             this.participantRepository = participantRepository;
             this.roomRepository = roomRepository;
+            this.logger = logger;
         }
 
         public override async Task OnConnectedAsync()
@@ -40,7 +43,8 @@ namespace Server.Communication
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             await base.OnDisconnectedAsync(exception);
-
+            
+            logger.LogDebug(exception, $"Client {Context.UserIdentifier} disconnected");
             await LeaveRoom();
         }
 
