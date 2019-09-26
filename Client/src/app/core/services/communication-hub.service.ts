@@ -29,6 +29,8 @@ export class CommunicationHubService {
   }
 
   public async connect() {
+    this.hubConnection.serverTimeoutInMilliseconds = 1200000;
+
     await this.hubConnection
       .start()
       .then(() => console.log('Connection started!'))
