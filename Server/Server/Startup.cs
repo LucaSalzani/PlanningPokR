@@ -33,6 +33,7 @@ namespace Server
             {
                 hubOptions.EnableDetailedErrors = true;
                 hubOptions.ClientTimeoutInterval = TimeSpan.FromMinutes(20);
+                hubOptions.KeepAliveInterval = TimeSpan.FromMinutes(10);
 
             });
             services.Configure<ApplicationConfiguration>(Configuration.GetSection("ApplicationConfiguration"));
