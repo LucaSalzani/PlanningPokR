@@ -12,6 +12,8 @@ export class VotingResultComponent implements OnInit {
   data: any;
   options: any;
 
+  dataNew: any[];
+
   constructor() { }
 
   ngOnInit(): void {
@@ -39,6 +41,21 @@ export class VotingResultComponent implements OnInit {
       donut: true,
       height: 300
     };
+
+    this.dataNew = [
+      {
+        name: 'Germany',
+        value: 8940000
+      },
+      {
+        name: 'USA',
+        value: 5000000
+      },
+      {
+        name: 'France',
+        value: 7200000
+      }
+    ];
   }
 
 }
