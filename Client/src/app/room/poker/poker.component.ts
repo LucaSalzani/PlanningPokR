@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, withLatestFrom } from 'rxjs/operators';
 
 import { CommunicationHubService } from 'src/app/core/services';
 import { ParticipantsStateUpdate } from 'src/app/core';
@@ -61,6 +61,10 @@ export class PokerComponent implements OnInit {
   async abortVoting() {
     await this.resetVotes();
     await this.communicationHubService.navigate(this.roomId, 'backlog');
+  }
+
+  getVotes() {
+    return this.participantsStateUpdate$.pipe(withLatestFrom(update => update.participants), map(list => list.map(p => p.vote)));
   }
 
   openModal(content: any) {

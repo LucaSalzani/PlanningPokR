@@ -12,6 +12,7 @@ import { ParticipantListComponent } from './room/participant-list';
 import { BacklogComponent } from './room/backlog';
 import { PokerComponent } from './room/poker';
 import { LoginComponent } from './auth/login';
+import { VotingResultComponent } from './room/poker/voting-result/voting-result.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { LoginComponent } from './auth/login';
     ParticipantListComponent,
     BacklogComponent,
     PokerComponent,
-    LoginComponent
+    LoginComponent,
+    VotingResultComponent
   ],
   imports: [
     BrowserModule,
