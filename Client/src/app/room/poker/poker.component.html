@@ -7,14 +7,14 @@
   <button type="button" class="btn btn-primary vote-button" (click)="selectValue(8)" [disabled]="(participantsStateUpdate$ | async).areVotesRevealed">8</button>
   <button type="button" class="btn btn-primary vote-button" (click)="selectValue(13)" [disabled]="(participantsStateUpdate$ | async).areVotesRevealed">13</button>
 </div>
-<div class="workflow-row" *ngIf="!(participantsStateUpdate$ | async).areVotesRevealed">
-  <button type="button" class="btn btn-primary" (click)="revealVotes()" [disabled]="!(isModerator$ | async)">Reveal</button>
-  <button type="button" class="btn btn-secondary" (click)="abortVoting()" [disabled]="!(isModerator$ | async)">Abort</button>
+<div class="workflow-row" *ngIf="!((participantsStateUpdate$ | async).areVotesRevealed) && (isModerator$ | async)">
+  <button type="button" class="btn btn-primary" (click)="revealVotes()">Reveal</button>
+  <button type="button" class="btn btn-secondary" (click)="abortVoting()">Abort</button>
   <button type="button" class="btn btn-secondary" (click)="disconnect()" *ngIf="userId==='disco'">Disconnect</button>
 </div>
-<div class="workflow-row" *ngIf="(participantsStateUpdate$ | async).areVotesRevealed">
-  <button type="button" class="btn btn-primary" (click)="openModal(content)" [disabled]="!(isModerator$ | async)">Continue</button>
-  <button type="button" class="btn btn-secondary" (click)="resetVotes()" [disabled]="!(isModerator$ | async)">Revote</button>
+<div class="workflow-row" *ngIf="((participantsStateUpdate$ | async).areVotesRevealed) && (isModerator$ | async)">
+  <button type="button" class="btn btn-primary" (click)="openModal(content)">Continue</button>
+  <button type="button" class="btn btn-secondary" (click)="resetVotes()">Revote</button>
   <button type="button" class="btn btn-secondary" (click)="disconnect()" *ngIf="userId==='disco'">Disconnect</button>
 </div>
 

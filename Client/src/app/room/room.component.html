@@ -10,6 +10,6 @@
 <div class="participant-list-container">
   <app-participant-list></app-participant-list>
 </div>
-<button type="button" class="btn btn-secondary" (click)="claimModerator()">
+<button type="button" class="btn btn-secondary" (click)="claimModerator()" *ngIf="!(isModerator$ | async)">
   <i class="fas fa-user-tie"></i> Claim Moderator
 </button>

@@ -1,7 +1,9 @@
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 
+import { AuthService } from './../auth/auth.service';
 import { CommunicationHubService, NavigationUpdate } from '../core';
 
 @Component({
@@ -10,16 +12,30 @@ import { CommunicationHubService, NavigationUpdate } from '../core';
   styleUrls: ['./room.component.scss']
 })
 export class RoomComponent implements OnInit, OnDestroy {
+  isModerator$: Observable<boolean>;
+
   private navigationUpdate$: Observable<NavigationUpdate>;
   private navigationUpdateSubscription: Subscription;
   private roomId: string;
+  private userId: string;
 
-  constructor(public communicationHubService: CommunicationHubService, private route: ActivatedRoute, private router: Router) {
-    this.navigationUpdate$ = this.communicationHubService.getNavigationUpdate();
-    this.navigationUpdateSubscription = this.navigationUpdate$.subscribe( navUpdate => this.navigate(navUpdate));
+  constructor(
+    public communicationHubService: CommunicationHubService,
+    private route: ActivatedRoute,
+    private router: Router,
+    authService: AuthService) {
+      this.navigationUpdate$ = this.communicationHubService.getNavigationUpdate();
+      this.navigationUpdateSubscription = this.navigationUpdate$.subscribe( navUpdate => this.navigate(navUpdate));
+      this.userId = authService.getUserId();
   }
 
   async ngOnInit() {
+    this.isModerator$ = this.communicationHubService.getParticipantsStateUpdate().pipe(
+      map(update => {
+        const user = update.participants.find(p => p.userId === this.userId);
+        return user ? user.isModerator : false;
+      }));
+
     this.roomId = this.route.snapshot.paramMap.get('roomid');
     await this.communicationHubService.enterRoomAsync(this.roomId);
   }

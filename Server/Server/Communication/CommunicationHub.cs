@@ -122,7 +122,6 @@ namespace Server.Communication
         {
             UpdateConnectionId();
 
-            // TODO: Nullcheck
             var participant = participantRepository.GetById(Context.UserIdentifier);
 
             participant.Vote = value;
