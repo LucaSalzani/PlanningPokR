@@ -294,7 +294,8 @@ namespace Server.Communication
             if (participant != null && participant.ConnectionId != Context.ConnectionId)
             {
                 participant.ConnectionId = Context.ConnectionId;
-                // participant.Vote = null; // TODO: Only reset if roomid changed
+                // participant.Vote = null;
+                // TODO: Only reset if roomid changed
                 participantRepository.Update(participant);
             }
         }
