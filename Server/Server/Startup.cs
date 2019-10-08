@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using Server.Communication;
 using Server.Repositories;
 using Server.Security;
+using Server.Services;
 
 namespace Server
 {
@@ -41,8 +42,6 @@ namespace Server
 
             services.AddAuthentication(options =>
                 {
-                    // Identity made Cookie authentication the default.
-                    // However, we want JWT Bearer Auth to be the default.
                     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 })
@@ -72,6 +71,8 @@ namespace Server
 
             services.AddSingleton<IParticipantRepository, ParticipantRepository>();
             services.AddSingleton<IRoomRepository, RoomRepository>();
+
+            services.AddTransient<IJiraService, JiraService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

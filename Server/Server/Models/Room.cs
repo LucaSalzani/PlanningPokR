@@ -13,5 +13,7 @@ namespace Server.Models
         public bool AreVotesRevealed { get; set; }
 
         public Phase Phase { get; set; }
+
+        public string JiraLabel { get; set; }
     }
 }

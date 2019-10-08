@@ -52,7 +52,7 @@ namespace Server.Controllers
         [HttpGet("appinfo")]
         public async Task<IActionResult> GetAppInfo()
         {
-            return Ok(await new JiraService().GetCustomFieldIdByName("Story Points"));
+            return Ok(await new JiraService().GetCustomFieldIdByNameAsync("Story Points"));
         }
     }
 }
