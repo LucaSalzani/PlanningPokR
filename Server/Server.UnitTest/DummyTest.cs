@@ -13,13 +13,5 @@ namespace Server.UnitTest
             var test = true;
             Assert.IsTrue(test);
         }
-
-        [TestMethod]
-        public async Task TestHttp()
-        {
-            var service = new JiraService();
-            var result = await service.GetCustomFieldIdByName("Story Points");
-            Assert.AreEqual("customfield_10106", result);
-        }
     }
 }

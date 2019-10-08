@@ -16,3 +16,7 @@ Planning Poker web app with SignalR
 
 - Clear the local storage in your browser
 - Use a different User ID
+
+## Local development
+
+- Set PLANNINGPOKR_JIRAPASSWORD as environment variable in launch settings
