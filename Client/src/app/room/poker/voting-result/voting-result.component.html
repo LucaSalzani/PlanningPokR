@@ -1,5 +1,9 @@
 <div class="chart-container">
-  <ngx-charts-bar-vertical
-  [results]="dataNew"
-  ></ngx-charts-bar-vertical>
+  <ngx-charts-bar-horizontal
+  [results]="data"
+  [xAxisTicks]="ticks"
+  xAxis="true"
+  yAxis="true"
+  tooltipDisabled="true"
+  ></ngx-charts-bar-horizontal>
 </div>

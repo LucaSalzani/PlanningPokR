@@ -9,10 +9,8 @@ export class VotingResultComponent implements OnInit {
 
   @Input() votes: number[];
 
-  data: any;
-  options: any;
-
-  dataNew: any[];
+  data: any[];
+  ticks: any[] = ['1', '2', '3', '4', '5', '6', '7'];
 
   constructor() { }
 
@@ -28,34 +26,15 @@ export class VotingResultComponent implements OnInit {
       }
     });
 
-    this.data = {
-      labels: [
-        ...(Object.keys(dataDict))
-      ],
-      series: [
-        ...(Object.entries(dataDict).map(([_, value]) => value))
-      ]
-    };
+    this.data = [];
 
-    this.options = {
-      donut: true,
-      height: 300
-    };
-
-    this.dataNew = [
-      {
-        name: 'Germany',
-        value: 8940000
-      },
-      {
-        name: 'USA',
-        value: 5000000
-      },
-      {
-        name: 'France',
-        value: 7200000
-      }
-    ];
+    Object.keys(dataDict).sort().forEach( vote => {
+      const dataPoint = {
+        name: vote,
+        value: dataDict[vote],
+      };
+      this.data.push(dataPoint);
+    });
   }
 
 }
