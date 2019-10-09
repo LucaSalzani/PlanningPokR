@@ -11,10 +11,9 @@ import { AppComponent } from './app.component';
 import { LobbyComponent } from './lobby';
 import { RoomComponent } from './room';
 import { ParticipantListComponent } from './room/participant-list';
-import { BacklogComponent } from './room/backlog';
-import { PokerComponent } from './room/poker';
+import { BacklogComponent, AddStoryManuallyModalComponent } from './room/backlog';
+import { PokerComponent, VotingResultComponent } from './room/poker';
 import { LoginComponent } from './auth/login';
-import { VotingResultComponent } from './room/poker/voting-result/voting-result.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +24,8 @@ import { VotingResultComponent } from './room/poker/voting-result/voting-result.
     BacklogComponent,
     PokerComponent,
     LoginComponent,
-    VotingResultComponent
+    VotingResultComponent,
+    AddStoryManuallyModalComponent
   ],
   imports: [
     BrowserModule,
@@ -37,6 +37,7 @@ import { VotingResultComponent } from './room/poker/voting-result/voting-result.
     BrowserAnimationsModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [AddStoryManuallyModalComponent]
 })
 export class AppModule { }

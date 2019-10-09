@@ -4,6 +4,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import { AddStoryManuallyModalComponent } from './add-story-manually-modal';
 import { StoryService, CommunicationHubService } from './../../core/services';
 import { Story } from 'src/app/core/models';
 import { AuthService } from 'src/app/auth';
@@ -18,8 +19,6 @@ export class BacklogComponent implements OnInit {
   isModerator$: Observable<boolean>;
   userId: string;
   roomId: string;
-  newStoryId: string;
-  newStoryTitle: string;
 
   constructor(
     private storyService: StoryService,
@@ -45,19 +44,15 @@ export class BacklogComponent implements OnInit {
     await this.communicationHubService.navigate(this.roomId, 'poker', storyId);
   }
 
-  async addStory() {
-    await this.storyService.addStory(this.roomId, this.newStoryId, this.newStoryTitle);
-  }
-
   async deleteStory(storyId: string) {
     await this.storyService.deleteStory(this.roomId, storyId);
   }
 
-  openNewStoryDialog(content: any) {
-    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then(async () => {
-      if (this.newStoryTitle && this.newStoryId) {
-        await this.addStory();
-        this.newStoryId = this.newStoryTitle = undefined;
+  openNewStoryManuallyDialog() {
+    const modalRef = this.modalService.open(AddStoryManuallyModalComponent);
+    modalRef.result.then(async (result: {newStoryId: string, newStoryTitle: string}) => {
+      if (result.newStoryTitle && result.newStoryId) {
+        await this.storyService.addStory(this.roomId, result.newStoryId, result.newStoryTitle);
       }
     }, () => {});
   }

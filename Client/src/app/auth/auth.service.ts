@@ -12,7 +12,6 @@ export class AuthService {
   isLoggedIn = false;
   jwt: string;
   userId: string;
-  // store the URL so we can redirect after logging in
   redirectUrl: string;
 
   constructor(private http: HttpClient, private router: Router) {

@@ -1,0 +1,19 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">Add new Story</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form>
+    <div class="form-group">
+      <label for="storyId">Story ID</label>
+      <input type="text" class="form-control" id="storyId" name="storyId" [(ngModel)]="newStoryId" ngbAutofocus>
+      <label for="storyTitle">Story Title</label>
+      <input type="text" class="form-control" id="storyTitle" name="storyTitle" [(ngModel)]="newStoryTitle">
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-primary wide-btn" (click)="close()">Add</button>
+</div>
