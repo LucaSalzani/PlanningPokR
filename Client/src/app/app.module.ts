@@ -11,7 +11,7 @@ import { AppComponent } from './app.component';
 import { LobbyComponent } from './lobby';
 import { RoomComponent } from './room';
 import { ParticipantListComponent } from './room/participant-list';
-import { BacklogComponent, AddStoryManuallyModalComponent } from './room/backlog';
+import { BacklogComponent, AddStoryManuallyModalComponent, AddStoryJiraModalComponent } from './room/backlog';
 import { PokerComponent, VotingResultComponent } from './room/poker';
 import { LoginComponent } from './auth/login';
 
@@ -25,7 +25,8 @@ import { LoginComponent } from './auth/login';
     PokerComponent,
     LoginComponent,
     VotingResultComponent,
-    AddStoryManuallyModalComponent
+    AddStoryManuallyModalComponent,
+    AddStoryJiraModalComponent
   ],
   imports: [
     BrowserModule,
@@ -38,6 +39,9 @@ import { LoginComponent } from './auth/login';
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [AddStoryManuallyModalComponent]
+  entryComponents: [
+    AddStoryManuallyModalComponent,
+    AddStoryJiraModalComponent
+  ]
 })
 export class AppModule { }

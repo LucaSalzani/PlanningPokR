@@ -1,0 +1,24 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">Add new Story</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div *ngIf="jiraStories.length === 0">
+    No stories loaded yet
+  </div>
+  <div *ngIf="jiraStories.length !== 0">
+    <div *ngFor="let story of jiraStories" class="app-row">
+      <div class="story-details">
+          <div class="story-id-label">{{story.key}}</div>
+          <div class="story-title-label">{{story.title}}</div>
+      </div>
+      <div class="action-buttons">
+        <button type="button" class="btn btn-primary thin-btn" (click)="addStory(story.key, story.title)">
+          <i class="fas fa-plus"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

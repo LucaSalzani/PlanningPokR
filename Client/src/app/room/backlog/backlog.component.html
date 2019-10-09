@@ -1,6 +1,9 @@
 <div class="action-row">
+    <button type="button" class="btn btn-primary wide-btn" (click)="openNewStoryJiraDialog()" *ngIf="(isModerator$ | async)">
+        <i class="fab fa-jira"></i> Add from Jira
+      </button>
   <button type="button" class="btn btn-primary wide-btn" (click)="openNewStoryManuallyDialog()" *ngIf="(isModerator$ | async)">
-    <i class="fas fa-plus"></i> Add a new Story
+    <i class="fas fa-plus"></i> Add manually
   </button>
 </div>
 <div class="app-row" *ngFor="let story of (storyList$ | async)">

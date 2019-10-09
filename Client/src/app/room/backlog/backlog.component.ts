@@ -4,6 +4,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import { AddStoryJiraModalComponent } from './add-story-jira-modal';
 import { AddStoryManuallyModalComponent } from './add-story-manually-modal';
 import { StoryService, CommunicationHubService } from './../../core/services';
 import { Story } from 'src/app/core/models';
@@ -50,6 +51,16 @@ export class BacklogComponent implements OnInit {
 
   openNewStoryManuallyDialog() {
     const modalRef = this.modalService.open(AddStoryManuallyModalComponent);
+    modalRef.result.then(async (result: {newStoryId: string, newStoryTitle: string}) => {
+      if (result.newStoryTitle && result.newStoryId) {
+        await this.storyService.addStory(this.roomId, result.newStoryId, result.newStoryTitle);
+      }
+    }, () => {});
+  }
+
+  openNewStoryJiraDialog() {
+    const modalRef = this.modalService.open(AddStoryJiraModalComponent);
+    modalRef.componentInstance.roomId = this.roomId;
     modalRef.result.then(async (result: {newStoryId: string, newStoryTitle: string}) => {
       if (result.newStoryTitle && result.newStoryId) {
         await this.storyService.addStory(this.roomId, result.newStoryId, result.newStoryTitle);
