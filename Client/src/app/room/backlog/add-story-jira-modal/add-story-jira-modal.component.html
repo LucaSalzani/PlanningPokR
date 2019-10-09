@@ -6,7 +6,7 @@
 </div>
 <div class="modal-body">
   <div *ngIf="jiraStories.length === 0">
-    No stories loaded yet
+    {{message}}
   </div>
   <div *ngIf="jiraStories.length !== 0">
     <div *ngFor="let story of jiraStories" class="app-row">

@@ -47,7 +47,7 @@ namespace Server.Services
                 var requestString = JsonConvert.SerializeObject(request, Formatting.None, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver()});
                 var content = new StringContent(requestString, Encoding.UTF8, "application/json");
 
-                var response = await httpClient.PostAsync($"{config.Value.JiraBaseUrl}rest/api/2/search", content); // TODO: Error Handing (Status code)
+                var response = await httpClient.PostAsync($"{config.Value.JiraBaseUrl}rest/api/2/search", content);
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -61,7 +61,34 @@ namespace Server.Services
                 return searchResult.Issues;
             }
         }
-        
+
+        public async Task<bool> SetStoryPointsAsync(string storyKey, int storyPoints)
+        {
+            var customFieldId = await GetCustomFieldIdByNameAsync(config.Value.JiraStoryPointsFieldName);
+            var request = new JiraStoryPointUpdate
+            {
+                Fields = new Dictionary<string, int> {{ customFieldId, storyPoints }}
+            };
+
+            using (var httpClient = new HttpClient())
+            {
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", GetEncodedBase64AuthenticationValue());
+
+                var requestString = JsonConvert.SerializeObject(request, Formatting.None, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+                var content = new StringContent(requestString, Encoding.UTF8, "application/json");
+
+                var response = await httpClient.PutAsync($"{config.Value.JiraBaseUrl}rest/api/2/issue/{storyKey}", content);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    logger.LogWarning($"Jira set story points request returned status code {(int)response.StatusCode}");
+                    return false;
+                }
+
+                return true;
+            }
+        }
+
         public async Task<string> GetCustomFieldIdByNameAsync(string name)
         {
             using (var httpClient = new HttpClient())

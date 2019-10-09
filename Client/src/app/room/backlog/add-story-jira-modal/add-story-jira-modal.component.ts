@@ -1,8 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
 
 import { environment } from 'src/environments/environment';
+import { JiraStoryDto } from './jira-story.dto';
 
 @Component({
   selector: 'app-add-story-jira-modal',
@@ -13,9 +14,11 @@ export class AddStoryJiraModalComponent implements OnInit {
   @Input() roomId: string;
 
   public jiraStories: JiraStoryDto[];
+  message: string;
 
   constructor(public activeModal: NgbActiveModal, private http: HttpClient) {
     this.jiraStories = [];
+    this.message = 'Loading...';
   }
 
   ngOnInit() {
@@ -23,10 +26,17 @@ export class AddStoryJiraModalComponent implements OnInit {
     parameters = parameters.append('roomId', this.roomId);
 
     this.http.get<JiraStoryDto[]>(`${environment.backendBaseUrl}api/jira/stories`, { params: parameters, responseType: 'json'})
-    .toPromise().then((stories: JiraStoryDto[]) => {
-      this.jiraStories = stories;
-      console.log('stories', this.jiraStories);
-    }); // TODO: Error Handling
+    .subscribe(
+      (stories: JiraStoryDto[]) => {
+        this.jiraStories = stories;
+        if (stories.length === 0) {
+          this.message = 'No stories found';
+        }
+      },
+      (error: HttpErrorResponse) => {
+        this.message = `Error fetching stories (${error.status})`;
+      }
+    );
   }
 
   addStory(storyKey: string, storyTitle: string) {
@@ -35,10 +45,4 @@ export class AddStoryJiraModalComponent implements OnInit {
       newStoryTitle: storyTitle
     });
   }
-
-}
-
-export interface JiraStoryDto { // TODO: Extract
-  key: string;
-  title: string;
 }

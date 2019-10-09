@@ -16,7 +16,7 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {
     this.jwt = localStorage.getItem('jwt');
-    this.isLoggedIn = !!this.jwt; // TODO: Check validity
+    this.isLoggedIn = !!this.jwt;
     if (!!this.jwt) {
       const decodedToken = jwt_decode(this.jwt);
       this.userId = decodedToken.nameid;
@@ -30,7 +30,7 @@ export class AuthService {
     parameters = parameters.append('userName', userName);
 
     return await this.http.get<string>(`${environment.backendBaseUrl}api/auth`, { params: parameters, responseType: 'text' as 'json'})
-    .toPromise().then((token: string) => { // TODO: Error handling
+    .toPromise().then((token: string) => { // TODO: Error handling (User feedback)
       this.isLoggedIn = true;
       this.jwt = token;
       const decodedToken = jwt_decode(this.jwt);

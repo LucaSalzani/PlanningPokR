@@ -1,9 +1,11 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { CommunicationHubService } from 'src/app/core/services/communication-hub.service';
 import { StoryStateUpdate, Story } from './../models';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +13,7 @@ import { StoryStateUpdate, Story } from './../models';
 export class StoryService {
   private storyStateUpdate$: Observable<StoryStateUpdate>;
 
-  constructor(private communicationHubService: CommunicationHubService) {
+  constructor(private communicationHubService: CommunicationHubService, private httpClient: HttpClient) {
     this.storyStateUpdate$ = this.communicationHubService.getStoryStateUpdate();
   }
 
@@ -25,5 +27,14 @@ export class StoryService {
 
   public async deleteStory(roomId: string, storyId: string) {
     await this.communicationHubService.deleteStory(roomId, storyId);
+  }
+
+  public async setStoryPointsInJira(storyId: string, acceptedVote: number) {
+    const body = {
+      storyKey: storyId,
+      storyPoints: acceptedVote,
+    };
+
+    await this.httpClient.post(`${environment.backendBaseUrl}api/jira/storypoints`, body).toPromise();
   }
 }

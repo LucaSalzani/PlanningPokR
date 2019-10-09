@@ -7,6 +7,7 @@ import { map, withLatestFrom } from 'rxjs/operators';
 import { CommunicationHubService } from 'src/app/core/services';
 import { ParticipantsStateUpdate } from 'src/app/core';
 import { AuthService } from './../../auth/auth.service';
+import { StoryService } from './../../core/services/story.service';
 
 @Component({
   selector: 'app-poker',
@@ -18,6 +19,7 @@ export class PokerComponent implements OnInit {
   isModerator$: Observable<boolean>;
   userId: string;
   storyId: string;
+  setStoryPointsToJira: boolean;
 
   private roomId: string;
 
@@ -25,9 +27,11 @@ export class PokerComponent implements OnInit {
     private communicationHubService: CommunicationHubService,
     private route: ActivatedRoute,
     private modalService: NgbModal,
+    private storyService: StoryService,
     authService: AuthService) {
       this.participantsStateUpdate$ = this.communicationHubService.getParticipantsStateUpdate();
       this.userId = authService.getUserId();
+      this.setStoryPointsToJira = true;
     }
 
   ngOnInit(): void {
@@ -54,6 +58,7 @@ export class PokerComponent implements OnInit {
 
   async acceptVote(acceptedVote: number) {
     await this.communicationHubService.setAcceptedVote(this.roomId, this.storyId, acceptedVote);
+    await this.storyService.setStoryPointsInJira(this.storyId, acceptedVote);
     await this.resetVotes();
     await this.communicationHubService.navigate(this.roomId, 'backlog');
   }
@@ -73,7 +78,7 @@ export class PokerComponent implements OnInit {
     }, () => {});
   }
 
-  disconnect() { // TODO: Remove
+  disconnect() {
     this.communicationHubService.disconnect();
   }
 }

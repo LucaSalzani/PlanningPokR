@@ -46,11 +46,5 @@ namespace Server.Controllers
             var token = jwtTokenHandler.WriteToken(jwtToken);
             return Ok(token);
         }
-
-        [HttpGet("appinfo")] // TODO: Delete this
-        public async Task<IActionResult> GetAppInfo()
-        {
-            return Ok(await new JiraService(null, null).GetCustomFieldIdByNameAsync("Story Points"));
-        }
     }
 }

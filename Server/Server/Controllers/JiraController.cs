@@ -46,5 +46,13 @@ namespace Server.Controllers
 
             return Ok(storyDtos);
         }
+
+        [HttpPost("storypoints")]
+        public async Task<IActionResult> SetStoryPoints(SetStoryPointsRequest request)
+        {
+            var wasSuccessful = await jiraService.SetStoryPointsAsync(request.StoryKey, request.StoryPoints);
+
+            return wasSuccessful ? Ok() : StatusCode(500);
+        }
     }
 }

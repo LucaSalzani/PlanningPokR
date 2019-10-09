@@ -22,7 +22,7 @@ export class LobbyComponent {
     ];
   }
 
-  joinRoom(roomId: string) {
-    this.router.navigateByUrl(`/room/${roomId}`); // TODO: Check async/await
+  async joinRoom(roomId: string) {
+    await this.router.navigateByUrl(`/room/${roomId}`);
   }
 }
