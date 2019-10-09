@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using Server.Models.Jira;
 
 namespace Server.Services
 {
@@ -14,12 +18,22 @@ namespace Server.Services
     {
         private readonly string jiraPassword = Environment.GetEnvironmentVariable("PLANNINGPOKR_JIRAPASSWORD");
 
+        private readonly ILogger<JiraService> logger;
+        private readonly IOptions<ApplicationConfiguration> config;
+
+        public JiraService(ILogger<JiraService> logger, IOptions<ApplicationConfiguration> config)
+        {
+            this.logger = logger;
+            this.config = config;
+        }
+
         public async Task<List<JiraStory>> GetStoriesByTeamLabelAsync(string label)
         {
+            var jql = string.Format(config.Value.JiraJql, label);
             var request = new JiraStoryRequest
             {
-                Jql = $"project = 'DiAS Digital Advisory Suite' AND type = Story AND labels = {label} AND status = New ORDER BY updatedDate DESC",
-                MaxResults = 15,
+                Jql = jql,
+                MaxResults = config.Value.JiraMaxResults,
                 Fields = new List<string>
                 {
                     "summary"
@@ -28,10 +42,18 @@ namespace Server.Services
 
             using (var httpClient = new HttpClient())
             {
-                var encoded = Convert.ToBase64String(System.Text.Encoding.GetEncoding("ISO-8859-1").GetBytes($"dias_agileplanner:{jiraPassword}"));
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", encoded);
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", GetEncodedBase64AuthenticationValue());
 
-                var response = await httpClient.PostAsJsonAsync("https://jira.sehlat.io/rest/api/2/search", request); // TODO: Error Handing (Status code)
+                var requestString = JsonConvert.SerializeObject(request, Formatting.None, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver()});
+                var content = new StringContent(requestString, Encoding.UTF8, "application/json");
+
+                var response = await httpClient.PostAsync($"{config.Value.JiraBaseUrl}rest/api/2/search", content); // TODO: Error Handing (Status code)
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    logger.LogWarning($"Jira search request returned status code {(int)response.StatusCode}");
+                    return null;
+                }
 
                 var responseString = await response.Content.ReadAsStringAsync();
 
@@ -44,44 +66,27 @@ namespace Server.Services
         {
             using (var httpClient = new HttpClient())
             {
-                var encoded = Convert.ToBase64String(System.Text.Encoding.GetEncoding("ISO-8859-1").GetBytes($"dias_agileplanner:{jiraPassword}"));
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", encoded);
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", GetEncodedBase64AuthenticationValue());
 
-                var response = await httpClient.GetStringAsync("https://jira.sehlat.io/rest/api/2/field");
+                string response;
+                try
+                {
+                    response = await httpClient.GetStringAsync($"{config.Value.JiraBaseUrl}rest/api/2/field");
+                }
+                catch (WebException e)
+                {
+                    logger.LogWarning($"Jira custom field request returned error {e.Status}", e);
+                    return null;
+                }
 
                 var fields = JsonConvert.DeserializeObject<JiraField[]>(response);
                 return fields.SingleOrDefault(f => f.Name == name)?.Id;
             }
         }
-    }
 
-    public class JiraSearchResult
-    {
-        public List<JiraStory> Issues { get; set; }
-    }
-
-    public class JiraStory
-    {
-        public string Key { get; set; }
-
-        public JiraStoryFields Fields { get; set; }
-    }
-
-    public class JiraStoryFields
-    {
-        public string Summary { get; set; }
-    }
-
-    public class JiraStoryRequest
-    {
-        public string Jql { get; set; }
-        public int MaxResults { get; set; }
-        public List<string> Fields { get; set; }
-    }
-
-    public class JiraField
-    {
-        public string Id { get; set; }
-        public string Name { get; set; }
+        private string GetEncodedBase64AuthenticationValue()
+        {
+            return Convert.ToBase64String(Encoding.GetEncoding("ISO-8859-1").GetBytes($"{config.Value.JiraUserName}:{jiraPassword}"));
+        }
     }
 }

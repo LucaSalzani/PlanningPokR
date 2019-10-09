@@ -17,12 +17,10 @@ namespace Server.Controllers
     public class AuthController : ControllerBase
     {
         private IPrivateKeyGenerator privateKeyGenerator;
-        private IParticipantRepository participantRepository;
 
-        public AuthController(IPrivateKeyGenerator privateKeyGenerator, IParticipantRepository participantRepository)
+        public AuthController(IPrivateKeyGenerator privateKeyGenerator)
         {
             this.privateKeyGenerator = privateKeyGenerator;
-            this.participantRepository = participantRepository;
         }
 
         [HttpGet]
@@ -32,8 +30,8 @@ namespace Server.Controllers
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Issuer = null,              // Not required as no third-party is involved
-                Audience = null,            // Not required as no third-party is involved
+                Issuer = null,
+                Audience = null,
                 IssuedAt = DateTime.UtcNow,
                 NotBefore = DateTime.UtcNow,
                 Expires = DateTime.UtcNow.AddMinutes(60),
@@ -49,10 +47,10 @@ namespace Server.Controllers
             return Ok(token);
         }
 
-        [HttpGet("appinfo")]
+        [HttpGet("appinfo")] // TODO: Delete this
         public async Task<IActionResult> GetAppInfo()
         {
-            return Ok(await new JiraService().GetCustomFieldIdByNameAsync("Story Points"));
+            return Ok(await new JiraService(null, null).GetCustomFieldIdByNameAsync("Story Points"));
         }
     }
 }

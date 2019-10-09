@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Server.Models.Jira;
 
 namespace Server.Services
 {

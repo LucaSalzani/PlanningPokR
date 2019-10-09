@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Server.Controllers.Dtos;
 using Server.Repositories;
 using Server.Services;
 
@@ -20,12 +21,22 @@ namespace Server.Controllers
 
         }
 
-        [HttpGet] // TODO: Better route
+        [HttpGet("stories")]
         public async Task<IActionResult> GetStoriesForRoom(string roomId)
         {
-            var jiraLabel = roomRepository.Get(roomId).JiraLabel;
+            var room = roomRepository.Get(roomId);
 
-            var stories = await jiraService.GetStoriesByTeamLabelAsync(jiraLabel);
+            if (room == null)
+            {
+                return NotFound();
+            }
+
+            var stories = await jiraService.GetStoriesByTeamLabelAsync(room.JiraLabel);
+
+            if (stories == null)
+            {
+                return StatusCode(503, "Jira service threw an error. See log for details");
+            }
 
             var storyDtos = stories.Select(s => new JiraStoryDto
             {
@@ -35,12 +46,5 @@ namespace Server.Controllers
 
             return Ok(storyDtos);
         }
-    }
-
-    public class JiraStoryDto // TODO: Extract
-    {
-        public string Key { get; set; }
-
-        public string Title { get; set; }
     }
 }
