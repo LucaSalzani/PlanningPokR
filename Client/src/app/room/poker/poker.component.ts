@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { map, withLatestFrom } from 'rxjs/operators';
 
 import { CommunicationHubService } from 'src/app/core/services';
-import { ParticipantsStateUpdate } from 'src/app/core';
+import { ParticipantsStateUpdate, RoomSettingsUpdate, VotingOption } from 'src/app/core';
 import { AuthService } from './../../auth/auth.service';
 import { StoryService } from './../../core/services/story.service';
 
@@ -16,6 +16,7 @@ import { StoryService } from './../../core/services/story.service';
 })
 export class PokerComponent implements OnInit {
   participantsStateUpdate$: Observable<ParticipantsStateUpdate>;
+  roomSettingsUpdate$: Observable<RoomSettingsUpdate>;
   isModerator$: Observable<boolean>;
   userId: string;
   storyId: string;
@@ -31,6 +32,7 @@ export class PokerComponent implements OnInit {
     private storyService: StoryService,
     authService: AuthService) {
       this.participantsStateUpdate$ = this.communicationHubService.getParticipantsStateUpdate();
+      this.roomSettingsUpdate$ = this.communicationHubService.getRoomSettingsUpdate();
       this.userId = authService.getUserId();
       this.setStoryPointsToJira = true;
       this.selectedValue = null;
@@ -61,7 +63,11 @@ export class PokerComponent implements OnInit {
 
   async acceptVote(acceptedVote: number) {
     await this.communicationHubService.setAcceptedVote(this.roomId, this.storyId, acceptedVote);
-    await this.storyService.setStoryPointsInJira(this.storyId, acceptedVote);
+
+    if (this.setStoryPointsToJira) {
+      await this.storyService.setStoryPointsInJira(this.storyId, acceptedVote); // TODO: Go on if error occurs
+    }
+
     await this.resetVotes();
     await this.communicationHubService.navigate(this.roomId, 'backlog');
   }
@@ -73,6 +79,10 @@ export class PokerComponent implements OnInit {
 
   getVotes() {
     return this.participantsStateUpdate$.pipe(withLatestFrom(update => update.participants), map(list => list.map(p => p.vote)));
+  }
+
+  getActiveVotingOptions(): Observable<VotingOption[]> {
+    return this.roomSettingsUpdate$.pipe(map(update => update.votingOptions.filter(option => option.isActive)));
   }
 
   openModal(content: any) {

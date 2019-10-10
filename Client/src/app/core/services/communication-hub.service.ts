@@ -4,7 +4,7 @@ import { Observable, BehaviorSubject, Subject } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import { AuthService } from './../../auth/auth.service';
-import { ParticipantsStateUpdate, NavigationUpdate, StoryStateUpdate } from './../models';
+import { ParticipantsStateUpdate, NavigationUpdate, StoryStateUpdate, RoomSettingsUpdate } from './../models';
 import { CommunicationHubMethod } from './communication-hub-method.enum';
 
 @Injectable({
@@ -15,11 +15,13 @@ export class CommunicationHubService {
   private participantsStateUpdate$: BehaviorSubject<ParticipantsStateUpdate>;
   private navigationUpdate$: Subject<NavigationUpdate>;
   private storyStateUpdate$: BehaviorSubject<StoryStateUpdate>;
+  private roomSettingsUpdate$: BehaviorSubject<RoomSettingsUpdate>;
 
   constructor(private authService: AuthService) {
     this.participantsStateUpdate$ = new BehaviorSubject<ParticipantsStateUpdate>({ participants: [], areVotesRevealed: false });
     this.navigationUpdate$ = new Subject<NavigationUpdate>();
     this.storyStateUpdate$ = new BehaviorSubject<StoryStateUpdate>({stories: []});
+    this.roomSettingsUpdate$ = new BehaviorSubject<RoomSettingsUpdate>({ teamJiraLabel: 'DEFAULT', votingOptions: [] });
 
     this.hubConnection = this.createHubConnection();
   }
@@ -30,6 +32,7 @@ export class CommunicationHubService {
     this.hubConnection.on(CommunicationHubMethod.ParticipantsStateUpdate, payload => this.participantsStateUpdate$.next(payload));
     this.hubConnection.on(CommunicationHubMethod.NavigationUpdate, payload => this.navigationUpdate$.next(payload));
     this.hubConnection.on(CommunicationHubMethod.StoryStateUpdate, payload => this.storyStateUpdate$.next(payload));
+    this.hubConnection.on(CommunicationHubMethod.RoomSettingsUpdate, payload => this.roomSettingsUpdate$.next(payload));
     this.hubConnection.onclose(error => console.log('onclose', error));
   }
 
@@ -47,6 +50,10 @@ export class CommunicationHubService {
 
   public getStoryStateUpdate(): Observable<StoryStateUpdate> {
     return this.storyStateUpdate$.asObservable();
+  }
+
+  public getRoomSettingsUpdate(): Observable<RoomSettingsUpdate> {
+    return this.roomSettingsUpdate$.asObservable();
   }
 
   public async enterRoomAsync(roomId: string) {

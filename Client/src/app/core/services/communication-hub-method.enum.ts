@@ -12,4 +12,5 @@ export enum CommunicationHubMethod {
   NavigationUpdate = 'navigationUpdate',
   ParticipantsStateUpdate = 'participantsStateUpdate',
   StoryStateUpdate = 'storyStateUpdate',
+  RoomSettingsUpdate = 'roomSettingsUpdate'
 }

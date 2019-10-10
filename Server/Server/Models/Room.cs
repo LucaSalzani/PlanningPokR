@@ -14,6 +14,6 @@ namespace Server.Models
 
         public Phase Phase { get; set; }
 
-        public string JiraLabel { get; set; }
+        public RoomSettings RoomSettings { get; set; }
     }
 }

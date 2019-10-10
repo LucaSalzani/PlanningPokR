@@ -31,7 +31,7 @@ namespace Server.Controllers
                 return NotFound();
             }
 
-            var stories = await jiraService.GetStoriesByTeamLabelAsync(room.JiraLabel);
+            var stories = await jiraService.GetStoriesByTeamLabelAsync(room.RoomSettings.TeamJiraLabel);
 
             if (stories == null)
             {

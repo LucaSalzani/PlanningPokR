@@ -1,12 +1,15 @@
 <h3>Vote for story {{storyId}}</h3>
+
 <div class="vote-row" *ngIf="!(participantsStateUpdate$ | async).areVotesRevealed">
-  <button type="button" class="btn vote-button" [ngClass]="{'btn-primary': selectedValue !== 1, 'btn-warning': selectedValue === 1}" (click)="selectValue(1)">1</button>
-  <button type="button" class="btn vote-button" [ngClass]="{'btn-primary': selectedValue !== 2, 'btn-warning': selectedValue === 2}" (click)="selectValue(2)">2</button>
-  <button type="button" class="btn vote-button" [ngClass]="{'btn-primary': selectedValue !== 3, 'btn-warning': selectedValue === 3}" (click)="selectValue(3)">3</button>
-  <button type="button" class="btn vote-button" [ngClass]="{'btn-primary': selectedValue !== 5, 'btn-warning': selectedValue === 5}" (click)="selectValue(5)">5</button>
-  <button type="button" class="btn vote-button" [ngClass]="{'btn-primary': selectedValue !== 8, 'btn-warning': selectedValue === 8}" (click)="selectValue(8)">8</button>
-  <button type="button" class="btn vote-button" [ngClass]="{'btn-primary': selectedValue !== 13, 'btn-warning': selectedValue === 13}" (click)="selectValue(13)">13</button>
+  <button type="button"
+          class="btn vote-button"
+          *ngFor="let votingOption of (getActiveVotingOptions() | async)"
+          [ngClass]="{'btn-primary': selectedValue !== votingOption.value, 'btn-warning': selectedValue === votingOption.value}"
+          (click)="selectValue(votingOption.value)">
+          {{ votingOption.displayName }}
+  </button>
 </div>
+
 <div *ngIf="(participantsStateUpdate$ | async).areVotesRevealed">
   <app-voting-result [votes]="(getVotes() | async)"></app-voting-result>
 </div>
@@ -30,12 +33,12 @@
   </div>
   <div class="modal-body">
     <div class="vote-row">
-      <button type="button" class="btn btn-primary vote-button" (click)="modal.close(1)">1</button>
-      <button type="button" class="btn btn-primary vote-button" (click)="modal.close(2)">2</button>
-      <button type="button" class="btn btn-primary vote-button" (click)="modal.close(3)">3</button>
-      <button type="button" class="btn btn-primary vote-button" (click)="modal.close(5)">5</button>
-      <button type="button" class="btn btn-primary vote-button" (click)="modal.close(8)">8</button>
-      <button type="button" class="btn btn-primary vote-button" (click)="modal.close(13)">13</button>
+      <button type="button"
+              class="btn vote-button btn-primary"
+              *ngFor="let votingOption of (getActiveVotingOptions() | async)"
+              (click)="modal.close(votingOption.value)">
+              {{ votingOption.displayName }}
+      </button>
     </div>
     <div>
       <div class="pretty p-default p-bigger">

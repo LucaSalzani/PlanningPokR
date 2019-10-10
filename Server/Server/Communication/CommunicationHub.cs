@@ -48,6 +48,7 @@ namespace Server.Communication
                     await Groups.AddToGroupAsync(Context.ConnectionId, oldParticipant.RoomId);
                     await SendParticipantsStateUpdate(oldParticipant.RoomId);
                     await SendNavigationUpdate(oldParticipant.RoomId);
+                    await SendRoomSettingsUpdate(oldParticipant.RoomId);
                     await SendStoryStateUpdate();
                 }
             }
@@ -86,6 +87,7 @@ namespace Server.Communication
 
             await SendParticipantsStateUpdate(roomId);
             await SendNavigationUpdate(roomId);
+            await SendRoomSettingsUpdate(roomId);
             await SendStoryStateUpdate();
         }
 
@@ -286,6 +288,19 @@ namespace Server.Communication
             };
 
             await Clients.All.SendAsync("storyStateUpdate", storyStateUpdate);
+        }
+
+        private async Task SendRoomSettingsUpdate(string roomId)
+        {
+            var room = roomRepository.Get(roomId);
+
+            var roomSettingsUpdate = new RoomSettingsUpdate
+            {
+                TeamJiraLabel = room.RoomSettings.TeamJiraLabel,
+                VotingOptions = room.RoomSettings.VotingOptions
+            };
+
+            await Clients.Group(roomId).SendAsync("roomSettingsUpdate", roomSettingsUpdate);
         }
 
         private void UpdateConnectionId()
