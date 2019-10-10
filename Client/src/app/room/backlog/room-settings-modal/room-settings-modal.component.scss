@@ -1,0 +1,30 @@
+@import '~pretty-checkbox/src/scss/variables';
+
+$pretty--colors:(
+  primary:#985B9C,
+  info:$pretty--color-info,
+  success:$pretty--color-success,
+  warning:$pretty--color-warning,
+  danger:$pretty--color-danger
+);
+
+@import '~pretty-checkbox/src/pretty-checkbox.scss';
+
+.voting-option-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: whitesmoke;
+  border: 2px solid lightgrey;
+  padding: 4px 0;
+  margin: 8px 0;
+  border-radius: 5px;
+
+  .voting-option-details {
+    margin-left: 5%;
+  }
+
+  .checkbox-container {
+    margin-right: 5%;
+  }
+}

@@ -1,0 +1,27 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Room settings</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <label for="storyId">Team Jira Label</label>
+    <input type="text" class="form-control" id="storyId" name="storyId" [(ngModel)]="settings.teamJiraLabel">
+    <hr>
+    Select your preferred voting options
+    <div class="voting-option-row" *ngFor="let votingOption of settings.votingOptions">
+      <div class="voting-option-details">
+        {{votingOption.displayName}}
+        <span *ngIf="!isNumeric(votingOption.displayName)"> (experimental)</span>
+      </div>
+      <div class="pretty p-default checkbox-container">
+          <input type="checkbox" [(ngModel)]="votingOption.isActive">
+          <div class="state p-primary-o">
+              <label>Use</label>
+          </div>
+        </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary wide-btn" (click)="saveAndClose()" [disabled]="!canSave()">Save & Close</button>
+  </div>

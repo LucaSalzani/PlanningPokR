@@ -14,6 +14,7 @@ import { ParticipantListComponent } from './room/participant-list';
 import { BacklogComponent, AddStoryManuallyModalComponent, AddStoryJiraModalComponent } from './room/backlog';
 import { PokerComponent, VotingResultComponent } from './room/poker';
 import { LoginComponent } from './auth/login';
+import { RoomSettingsModalComponent } from './room/backlog/room-settings-modal/room-settings-modal.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { LoginComponent } from './auth/login';
     LoginComponent,
     VotingResultComponent,
     AddStoryManuallyModalComponent,
-    AddStoryJiraModalComponent
+    AddStoryJiraModalComponent,
+    RoomSettingsModalComponent
   ],
   imports: [
     BrowserModule,
@@ -41,7 +43,8 @@ import { LoginComponent } from './auth/login';
   bootstrap: [AppComponent],
   entryComponents: [
     AddStoryManuallyModalComponent,
-    AddStoryJiraModalComponent
+    AddStoryJiraModalComponent,
+    RoomSettingsModalComponent
   ]
 })
 export class AppModule { }

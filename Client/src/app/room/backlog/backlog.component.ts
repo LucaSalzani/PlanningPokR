@@ -1,3 +1,4 @@
+import { RoomSettingsModalComponent } from './room-settings-modal/room-settings-modal.component';
 import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -7,7 +8,7 @@ import { map } from 'rxjs/operators';
 import { AddStoryJiraModalComponent } from './add-story-jira-modal';
 import { AddStoryManuallyModalComponent } from './add-story-manually-modal';
 import { StoryService, CommunicationHubService } from './../../core/services';
-import { Story } from 'src/app/core/models';
+import { Story, RoomSettingsUpdate } from 'src/app/core/models';
 import { AuthService } from 'src/app/auth';
 
 @Component({
@@ -64,6 +65,15 @@ export class BacklogComponent implements OnInit {
     modalRef.result.then(async (result: {newStoryId: string, newStoryTitle: string}) => {
       if (result.newStoryTitle && result.newStoryId) {
         await this.storyService.addStory(this.roomId, result.newStoryId, result.newStoryTitle);
+      }
+    }, () => {});
+  }
+
+  openSettingsDialog() {
+    const modalRef = this.modalService.open(RoomSettingsModalComponent);
+    modalRef.result.then(async (result: RoomSettingsUpdate) => {
+      if (result) {
+        await this.communicationHubService.updateRoomSettings(this.roomId, result);
       }
     }, () => {});
   }

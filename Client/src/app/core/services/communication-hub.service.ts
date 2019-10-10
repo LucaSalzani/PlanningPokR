@@ -106,6 +106,11 @@ export class CommunicationHubService {
     await this.hubConnection.invoke(CommunicationHubMethod.ClaimModerator, roomId);
   }
 
+  public async updateRoomSettings(roomId: string, update: RoomSettingsUpdate) {
+    await this.startHubConnectionIfDisconnected();
+    await this.hubConnection.invoke(CommunicationHubMethod.UpdateRoomSettings, roomId, update);
+  }
+
   public disconnect() {
     this.hubConnection.stop();
   }

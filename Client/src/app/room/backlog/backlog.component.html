@@ -1,10 +1,17 @@
 <div class="action-row">
+  <div class="settings">
+    <button type="button" class="btn btn-secondary wide-btn" (click)="openSettingsDialog()" *ngIf="(isModerator$ | async)">
+      <i class="fas fa-cog"></i>
+    </button>
+  </div>
+  <div class="add-story-buttons">
     <button type="button" class="btn btn-primary wide-btn" (click)="openNewStoryJiraDialog()" *ngIf="(isModerator$ | async)">
-        <i class="fab fa-jira"></i> Add from Jira
-      </button>
-  <button type="button" class="btn btn-primary wide-btn" (click)="openNewStoryManuallyDialog()" *ngIf="(isModerator$ | async)">
-    <i class="fas fa-plus"></i> Add manually
-  </button>
+      <i class="fab fa-jira"></i> Add from Jira
+    </button>
+    <button type="button" class="btn btn-primary wide-btn" (click)="openNewStoryManuallyDialog()" *ngIf="(isModerator$ | async)">
+      <i class="fas fa-plus"></i> Add manually
+    </button>
+  </div>
 </div>
 <div class="app-row" *ngIf="!(storyList$ | async).length">
   <span class="no-entries">No stories in this team</span>

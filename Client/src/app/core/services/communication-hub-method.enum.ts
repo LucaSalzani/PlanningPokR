@@ -9,6 +9,7 @@ export enum CommunicationHubMethod {
   AddStory = 'addStory',
   DeleteStory = 'deleteStory',
   ClaimModerator = 'claimModerator',
+  UpdateRoomSettings = 'updateRoomSettings',
   NavigationUpdate = 'navigationUpdate',
   ParticipantsStateUpdate = 'participantsStateUpdate',
   StoryStateUpdate = 'storyStateUpdate',

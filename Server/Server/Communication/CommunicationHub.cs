@@ -255,6 +255,19 @@ namespace Server.Communication
             await SendParticipantsStateUpdate(roomId);
         }
 
+
+        [HubMethodName("updateRoomSettings")]
+        public async Task UpdateRoomSettings(string roomId, RoomSettings roomSettings)
+        {
+            UpdateConnectionId();
+
+            var room = roomRepository.Get(roomId);
+            room.RoomSettings = roomSettings;
+            roomRepository.Update(room);
+
+            await SendRoomSettingsUpdate(roomId);
+        }
+
         private async Task SendParticipantsStateUpdate(string roomId)
         {
             var areVotesRevealed = roomRepository.Get(roomId).AreVotesRevealed;
