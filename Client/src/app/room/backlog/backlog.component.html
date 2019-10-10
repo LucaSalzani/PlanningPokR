@@ -6,6 +6,9 @@
     <i class="fas fa-plus"></i> Add manually
   </button>
 </div>
+<div class="app-row" *ngIf="!(storyList$ | async).length">
+  <span class="no-entries">No stories in this team</span>
+</div>
 <div class="app-row" *ngFor="let story of (storyList$ | async)">
   <div class="story-details">
       <div class="story-id-label">{{story.storyId}}</div>

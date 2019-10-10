@@ -20,6 +20,7 @@ export class PokerComponent implements OnInit {
   userId: string;
   storyId: string;
   setStoryPointsToJira: boolean;
+  selectedValue: number | null;
 
   private roomId: string;
 
@@ -32,6 +33,7 @@ export class PokerComponent implements OnInit {
       this.participantsStateUpdate$ = this.communicationHubService.getParticipantsStateUpdate();
       this.userId = authService.getUserId();
       this.setStoryPointsToJira = true;
+      this.selectedValue = null;
     }
 
   ngOnInit(): void {
@@ -46,6 +48,7 @@ export class PokerComponent implements OnInit {
 
   async selectValue(value: number) {
     await this.communicationHubService.selectValueAsync(value, this.roomId);
+    this.selectedValue = value;
   }
 
   async revealVotes() {

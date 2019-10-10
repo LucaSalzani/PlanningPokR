@@ -1,11 +1,11 @@
 <h3>Vote for story {{storyId}}</h3>
 <div class="vote-row" *ngIf="!(participantsStateUpdate$ | async).areVotesRevealed">
-  <button type="button" class="btn btn-primary vote-button" (click)="selectValue(1)">1</button>
-  <button type="button" class="btn btn-primary vote-button" (click)="selectValue(2)">2</button>
-  <button type="button" class="btn btn-primary vote-button" (click)="selectValue(3)">3</button>
-  <button type="button" class="btn btn-primary vote-button" (click)="selectValue(5)">5</button>
-  <button type="button" class="btn btn-primary vote-button" (click)="selectValue(8)">8</button>
-  <button type="button" class="btn btn-primary vote-button" (click)="selectValue(13)">13</button>
+  <button type="button" class="btn vote-button" [ngClass]="{'btn-primary': selectedValue !== 1, 'btn-warning': selectedValue === 1}" (click)="selectValue(1)">1</button>
+  <button type="button" class="btn vote-button" [ngClass]="{'btn-primary': selectedValue !== 2, 'btn-warning': selectedValue === 2}" (click)="selectValue(2)">2</button>
+  <button type="button" class="btn vote-button" [ngClass]="{'btn-primary': selectedValue !== 3, 'btn-warning': selectedValue === 3}" (click)="selectValue(3)">3</button>
+  <button type="button" class="btn vote-button" [ngClass]="{'btn-primary': selectedValue !== 5, 'btn-warning': selectedValue === 5}" (click)="selectValue(5)">5</button>
+  <button type="button" class="btn vote-button" [ngClass]="{'btn-primary': selectedValue !== 8, 'btn-warning': selectedValue === 8}" (click)="selectValue(8)">8</button>
+  <button type="button" class="btn vote-button" [ngClass]="{'btn-primary': selectedValue !== 13, 'btn-warning': selectedValue === 13}" (click)="selectValue(13)">13</button>
 </div>
 <div *ngIf="(participantsStateUpdate$ | async).areVotesRevealed">
   <app-voting-result [votes]="(getVotes() | async)"></app-voting-result>
