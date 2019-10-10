@@ -13,7 +13,8 @@ $pretty--colors:(
 
 .vote-row {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
+  flex-flow: wrap;
   align-items: center;
   padding: 10px 0;
   margin: 10px 0;
@@ -22,6 +23,7 @@ $pretty--colors:(
     height: 5em;
     font-size: 1.25em;
     flex-basis: 15%;
+    margin-bottom: 12px;
   }
 }
 
