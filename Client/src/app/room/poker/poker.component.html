@@ -38,7 +38,12 @@
       <button type="button" class="btn btn-primary vote-button" (click)="modal.close(13)">13</button>
     </div>
     <div>
-      <input type="checkbox" [(ngModel)]="setStoryPointsToJira"> Set story points in Jira
+      <div class="pretty p-default p-bigger">
+        <input type="checkbox" [(ngModel)]="setStoryPointsToJira">
+        <div class="state p-primary-o">
+            <label>Set story points in Jira</label>
+        </div>
+    </div>
     </div>
   </div>
 </ng-template>

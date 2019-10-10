@@ -1,3 +1,16 @@
+@import '~pretty-checkbox/src/scss/variables';
+
+$pretty--colors:(
+  primary:#985B9C,
+  info:$pretty--color-info,
+  success:$pretty--color-success,
+  warning:$pretty--color-warning,
+  danger:$pretty--color-danger
+);
+
+@import '~pretty-checkbox/src/pretty-checkbox.scss';
+
+
 .vote-row {
   display: flex;
   justify-content: space-between;
