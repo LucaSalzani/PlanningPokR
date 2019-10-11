@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using Server.Models;
 using Server.Repositories;
+using Server.Services;
 
 namespace Server.Communication
 {
@@ -15,12 +16,14 @@ namespace Server.Communication
     {
         private readonly IParticipantRepository participantRepository;
         private readonly IRoomRepository roomRepository;
+        private readonly IInactivityGuard inactivityGuard;
         private readonly ILogger logger;
 
-        public CommunicationHub(IParticipantRepository participantRepository, IRoomRepository roomRepository, ILogger<CommunicationHub> logger)
+        public CommunicationHub(IParticipantRepository participantRepository, IRoomRepository roomRepository, IInactivityGuard inactivityGuard, ILogger<CommunicationHub> logger)
         {
             this.participantRepository = participantRepository;
             this.roomRepository = roomRepository;
+            this.inactivityGuard = inactivityGuard;
             this.logger = logger;
         }
 
@@ -28,6 +31,7 @@ namespace Server.Communication
         {
             await base.OnConnectedAsync();
             UpdateConnectionId();
+            await ReportActivity();
 
             var participant = new Participant
             {
@@ -69,6 +73,7 @@ namespace Server.Communication
         public async Task EnterRoom(string roomId)
         {
             UpdateConnectionId();
+            await ReportActivity();
             var participant = participantRepository.GetById(Context.UserIdentifier);
 
             if (participant == null)
@@ -95,6 +100,7 @@ namespace Server.Communication
         public async Task LeaveRoom()
         {
             UpdateConnectionId();
+            await ReportActivity();
             var participant = participantRepository.GetById(Context.UserIdentifier);
 
             if (participant == null)
@@ -123,6 +129,7 @@ namespace Server.Communication
         public async Task SelectValue(int value, string roomId)
         {
             UpdateConnectionId();
+            await ReportActivity();
 
             var participant = participantRepository.GetById(Context.UserIdentifier);
 
@@ -135,6 +142,7 @@ namespace Server.Communication
         [HubMethodName("revealVotes")]
         public async Task RevealVotes(string roomId)
         {
+            await ReportActivity();
             UpdateConnectionId();
             var room = roomRepository.Get(roomId);
             room.AreVotesRevealed = true;
@@ -146,6 +154,7 @@ namespace Server.Communication
         [HubMethodName("resetVotes")]
         public async Task ResetVotes(string roomId)
         {
+            await ReportActivity();
             UpdateConnectionId();
             var room = roomRepository.Get(roomId);
             room.AreVotesRevealed = false;
@@ -164,6 +173,7 @@ namespace Server.Communication
         [HubMethodName("setAcceptedVote")]
         public async Task SetAcceptedVote(string roomId, string storyId, int acceptedVote)
         {
+            await ReportActivity();
             UpdateConnectionId();
             var room = roomRepository.Get(roomId);
             if (room?.Stories.FirstOrDefault(s => s.StoryId == storyId) == null)
@@ -180,6 +190,7 @@ namespace Server.Communication
         [HubMethodName("addStory")]
         public async Task AddStory(string roomId, string storyId, string title)
         {
+            await ReportActivity();
             UpdateConnectionId();
             var room = roomRepository.Get(roomId);
             if (room == null || room.Stories.FirstOrDefault(s => s.StoryId == storyId) != null)
@@ -205,6 +216,7 @@ namespace Server.Communication
         [HubMethodName("deleteStory")]
         public async Task DeleteStory(string roomId, string storyId)
         {
+            await ReportActivity();
             UpdateConnectionId();
             var room = roomRepository.Get(roomId);
             if (room == null || room.Stories.FirstOrDefault(s => s.StoryId == storyId) == null)
@@ -223,6 +235,7 @@ namespace Server.Communication
         [HubMethodName("navigate")]
         public async Task Navigate(string roomId, string phase, string storyId)
         {
+            await ReportActivity();
             UpdateConnectionId();
             var room = roomRepository.Get(roomId);
             room.Phase.PhaseName = phase;
@@ -235,6 +248,7 @@ namespace Server.Communication
         [HubMethodName("claimModerator")]
         public async Task ClaimModerator(string roomId)
         {
+            await ReportActivity();
             UpdateConnectionId();
 
             var newModerator = participantRepository.GetById(Context.UserIdentifier);
@@ -259,6 +273,7 @@ namespace Server.Communication
         [HubMethodName("updateRoomSettings")]
         public async Task UpdateRoomSettings(string roomId, RoomSettings roomSettings)
         {
+            await ReportActivity();
             UpdateConnectionId();
 
             var room = roomRepository.Get(roomId);
@@ -314,6 +329,16 @@ namespace Server.Communication
             };
 
             await Clients.Group(roomId).SendAsync("roomSettingsUpdate", roomSettingsUpdate);
+        }
+
+        private async Task ReportActivity()
+        {
+            inactivityGuard.ReportActivity(Context.UserIdentifier);
+            var removedParticipants = inactivityGuard.RemoveInactiveParticipants();
+            foreach (var removedParticipant in removedParticipants)
+            {
+                await Groups.RemoveFromGroupAsync(removedParticipant.ConnectionId, removedParticipant.RoomId);
+            }
         }
 
         private void UpdateConnectionId()

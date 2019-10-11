@@ -1,4 +1,6 @@
-﻿namespace Server.Models
+﻿using System;
+
+namespace Server.Models
 {
     public class Participant
     {
@@ -13,5 +15,7 @@
         public int? Vote { get; set; }
 
         public bool IsModerator { get; set; }
+
+        public DateTime LastActiveTimeStampUtc { get; set; }
     }
 }

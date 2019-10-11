@@ -72,6 +72,7 @@ namespace Server
             services.AddSingleton<IRoomRepository, RoomRepository>();
 
             services.AddTransient<IJiraService, JiraService>();
+            services.AddTransient<IInactivityGuard, InactivityGuard>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
