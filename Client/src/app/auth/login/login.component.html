@@ -1,12 +1,14 @@
+<div>
+  <p>Welcome to PlanningPokr! Here you have the GIPHY cat of the day!</p>
+</div>
+<div>
+  <img [src]="catOfTheDayUrl" alt="Cat of the day">
+</div>
 <div class="form-group">
   <div>
-    <label for="userId">UserId (shortname)</label>
-    <input type="text" class="form-control" id="userId" [(ngModel)]="userId">
-  </div>
-  <div>
-    <label for="userName">Display Name</label>
+    <label for="userName">Choose your display name</label>
     <input type="text" class="form-control" id="userName" [(ngModel)]="userName">
   </div>
 </div>
 
-<button (click)="login()" class="btn btn-primary">Login</button>
+<button (click)="login()" class="btn btn-primary">Continue</button>

@@ -23,10 +23,9 @@ export class AuthService {
     }
   }
 
-  async login(userId: string, userName: string) {
+  async login(userName: string) {
     let parameters = new HttpParams();
 
-    parameters = parameters.append('userId', userId);
     parameters = parameters.append('userName', userName);
 
     return await this.http.get<string>(`${environment.backendBaseUrl}api/auth`, { params: parameters, responseType: 'text' as 'json'})

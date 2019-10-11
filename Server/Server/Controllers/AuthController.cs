@@ -24,9 +24,11 @@ namespace Server.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get(string userId, string userName)
+        public IActionResult Get(string userName)
         {
             var signingKey = Encoding.ASCII.GetBytes(privateKeyGenerator.PrivateKey);
+
+            var userId = Guid.NewGuid().ToString("D");
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
