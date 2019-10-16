@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit {
     parameters = parameters.append('tag', 'cat');
     parameters = parameters.append('rating', 'pg');
 
-    this.httpClient.get<GiphyResponse>('http://api.giphy.com/v1/gifs/random', { params: parameters, responseType: 'json'})
+    this.httpClient.get<GiphyResponse>('https://api.giphy.com/v1/gifs/random', { params: parameters, responseType: 'json'})
     .subscribe(response => this.catOfTheDayUrl = response.data.images.fixed_height.url);
   }
 
