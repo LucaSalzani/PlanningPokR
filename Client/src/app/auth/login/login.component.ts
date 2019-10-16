@@ -14,7 +14,9 @@ export class LoginComponent implements OnInit {
   public userName: string;
   catOfTheDayUrl: string;
 
-  constructor(public authService: AuthService, public router: Router, private httpClient: HttpClient) {}
+  constructor(public authService: AuthService, public router: Router, private httpClient: HttpClient) {
+    this.catOfTheDayUrl = 'assets/spinner_color.gif';
+  }
 
   ngOnInit(): void {
     let parameters = new HttpParams();
