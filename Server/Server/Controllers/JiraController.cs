@@ -41,7 +41,7 @@ namespace Server.Controllers
             var storyDtos = stories.Select(s => new JiraStoryDto
             {
                 Key = s.Key,
-                Title = s.Fields.Summary
+                Title = "(Classified)" // To declassify, return s.Fields.Summary
             });
 
             return Ok(storyDtos);

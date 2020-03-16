@@ -35,7 +35,7 @@ export class PokerComponent implements OnInit, OnDestroy {
       this.participantsStateUpdate$ = this.communicationHubService.getParticipantsStateUpdate();
       this.roomSettingsUpdate$ = this.communicationHubService.getRoomSettingsUpdate();
       this.userId = authService.getUserId();
-      this.setStoryPointsToJira = true;
+      this.setStoryPointsToJira = false;
       this.selectedValue = null;
     }
 
