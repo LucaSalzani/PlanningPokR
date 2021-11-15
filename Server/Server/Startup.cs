@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Server.Communication;
@@ -27,7 +28,7 @@ namespace Server
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Latest);
             services.AddCors();
             services.AddSignalR().AddHubOptions<CommunicationHub>(hubOptions =>
             {
@@ -76,7 +77,7 @@ namespace Server
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IOptions<ApplicationConfiguration> config)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<ApplicationConfiguration> config)
         {
             if (env.IsDevelopment())
             {
@@ -87,7 +88,8 @@ namespace Server
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
+            
+            app.UseRouting();
             app.UseCors(options => options
                 .WithOrigins(config.Value.FrontendUrls)
                 .AllowAnyMethod()
@@ -95,11 +97,15 @@ namespace Server
                 .AllowCredentials());
 
             app.UseAuthentication();
+            app.UseAuthorization();
 
-            app.UseSignalR(route => route.MapHub<CommunicationHub>(config.Value.CommunicationHubPath));
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHub<CommunicationHub>(config.Value.CommunicationHubPath);
+                endpoints.MapDefaultControllerRoute();
+            });
 
             app.UseHttpsRedirection();
-            app.UseMvc();
         }
     }
 }
