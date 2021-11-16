@@ -1,15 +1,16 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import authService from '../services/auth.service';
+import useAuth from '../services/use-auth.hook';
 
  
 const Login = () => {
 
   const [userName, setUserName] = useState('')
   const navigate = useNavigate()
+  const auth = useAuth()
 
   const handleLogin = async () => {
-    await authService.login(userName)
+    await auth.login(userName)
     navigate('/lobby')
   }
 

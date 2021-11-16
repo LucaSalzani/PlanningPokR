@@ -1,25 +1,21 @@
-import { useEffect } from "react";
-import authService from "../services/auth.service";
-import useHubConnection from "../services/use-hub-connection.hook";
+import { generatePath, useNavigate } from "react-router-dom";
+import useAuth from "../services/use-auth.hook";
 
- 
+
 const Lobby = () => {
 
-    const connection = useHubConnection()
-    
-    useEffect(() => {
-        const subscription = connection.getParticipantsStateUpdate().subscribe(update => console.log(update))
-        return () => subscription.unsubscribe()
-    }, [connection])
+  const auth = useAuth()
+  const navigate = useNavigate()
 
-    const enterRoom = async () => {
-        await connection.enterRoomAsync('anubis')
-    }
+  const enterRoom = () => {
+    navigate(generatePath("/room/:roomid", { roomid: 'anubis' }))
+  }
 
-    return ( <> 
-    <h2>Lobby {authService.userName}</h2> 
-    <button onClick={enterRoom}>Enter</button>
+  return (
+    <>
+      <h2>Lobby {auth.userName}</h2>
+      <button onClick={enterRoom}>Enter Anubis</button>
     </>);
 }
- 
+
 export default Lobby;

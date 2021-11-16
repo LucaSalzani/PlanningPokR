@@ -1,10 +1,11 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { HttpError, HubConnection, HubConnectionBuilder, HubConnectionState, LogLevel } from "@microsoft/signalr";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { NavigationUpdate } from "../models/navigation-update.model";
 import { ParticipantsStateUpdate } from "../models/participants-state-update.model";
 import { RoomSettingsUpdate } from "../models/room-settings-update.model";
 import { StoryStateUpdate } from "../models/story-state-update.model";
-import authService from "./auth.service";
+import useAuth from "./use-auth.hook";
 
 const API_URL = 'https://localhost:5101/communicationHub'
 
@@ -43,7 +44,7 @@ class ConnectionHubService {
     this.connection = new HubConnectionBuilder()
     .configureLogging(LogLevel.Trace)
     .withUrl(API_URL, {
-      accessTokenFactory: () => authService.getJwt()
+      accessTokenFactory: () => useAuth().getJwt()
     })
     .withAutomaticReconnect()
     .build();
@@ -89,7 +90,7 @@ class ConnectionHubService {
     .catch(async (err: Error) => {
       console.log('An error occurred', err);
       if (err instanceof HttpError && err.statusCode === 401) {
-        authService.logout();
+        useAuth().logout();
       }
     });
   }
