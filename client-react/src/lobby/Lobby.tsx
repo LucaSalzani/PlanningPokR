@@ -1,5 +1,5 @@
 import { generatePath, useNavigate } from "react-router-dom";
-import { useAuth } from "../App";
+import { useAuth } from "../services/auth-context";
 
 
 const Lobby = () => {

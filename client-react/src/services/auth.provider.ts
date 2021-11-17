@@ -6,6 +6,7 @@ const API_URL = 'https://localhost:5101/api/auth'
 const authProvider = {
   isAuthenticated: false,
   jwt: '',
+  userId: '',
   signin(userName: string, callback: VoidFunction) {
     axios
       .get(API_URL, { params: { username: userName } })
@@ -13,6 +14,14 @@ const authProvider = {
         console.log(response.data)
         if (response.status === 200) {
           localStorage.setItem("jwt", response.data)
+          let decodedToken: any
+          try {
+            decodedToken = jwt_decode(response.data)
+            this.userId = decodedToken.userid
+          } catch (error) {
+            console.error(error)
+            throw error;
+          }
           authProvider.jwt = response.data
         }
         authProvider.isAuthenticated = true;
@@ -38,6 +47,7 @@ const authProvider = {
       }
       authProvider.isAuthenticated = true
       authProvider.jwt = existingJwt
+      authProvider.userId = decodedToken.userid
       callback(decodedToken.unique_name)
     }
   }
