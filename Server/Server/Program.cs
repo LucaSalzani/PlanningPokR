@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore;
+﻿using System;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
 namespace Server
@@ -10,8 +11,13 @@ namespace Server
             CreateWebHostBuilder(args).Build().Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
+        {
+            var portEnvVariable = Environment.GetEnvironmentVariable("PORT");
+            var webHostBuilder = WebHost.CreateDefaultBuilder(args).UseStartup<Startup>();
+            return portEnvVariable == null 
+                ? webHostBuilder 
+                : webHostBuilder.UseUrls("http://*:" + Environment.GetEnvironmentVariable("PORT"));
+        }
     }
 }

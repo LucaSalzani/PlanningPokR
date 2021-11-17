@@ -35,7 +35,7 @@ const Poker = () => {
 
   const votingOptionList = votingOptions.map(opt => <button key={opt.value} onClick={() => handleVote(opt.value)}>{opt.displayName}</button>)
   const voteResultList = votingOptions.map(opt => <li key={opt.value}>{opt.displayName}: {votes.filter(v => v === opt.value).length}</li>)
-  voteResultList.push(<li>No Vote: {votes.filter(v => !v).length}</li>)
+  voteResultList.push(<li key={-1}>No Vote: {votes.filter(v => !v).length}</li>)
 
   const PokerElement = () => {
     if (areVotesRevealed){
