@@ -16,7 +16,7 @@ const Backlog = () => {
     return () => subscription.unsubscribe()
   }, [connection])
 
-  const storyListItems = stories.filter(s => s.roomId === roomid).map(s => <li>{s.storyId}</li>)
+  const storyListItems = stories.filter(s => s.roomId === roomid).map(s => <li key={s.storyId}>{s.storyId}</li>)
 
   return (
     <><h2>Backlog</h2><ul>

@@ -1,5 +1,5 @@
 import { generatePath, useNavigate } from "react-router-dom";
-import useAuth from "../services/use-auth.hook";
+import { useAuth } from "../App";
 
 
 const Lobby = () => {
@@ -13,7 +13,7 @@ const Lobby = () => {
 
   return (
     <>
-      <h2>Lobby {auth.userName}</h2>
+      <h2>Lobby {auth.user}</h2>
       <button onClick={enterRoom}>Enter Anubis</button>
     </>);
 }

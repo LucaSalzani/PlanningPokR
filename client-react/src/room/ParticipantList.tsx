@@ -15,7 +15,7 @@ const ParticipantList = () => {
     return () => subscription.unsubscribe()
   }, [connection])
 
-  const partList = participants.map(p => <li>{p.name}</li>)
+  const partList = participants.map(p => <li key={p.userId}>{p.name}</li>)
 
   return (
     <>

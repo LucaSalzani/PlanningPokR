@@ -5,7 +5,7 @@ import { NavigationUpdate } from "../models/navigation-update.model";
 import { ParticipantsStateUpdate } from "../models/participants-state-update.model";
 import { RoomSettingsUpdate } from "../models/room-settings-update.model";
 import { StoryStateUpdate } from "../models/story-state-update.model";
-import useAuth from "./use-auth.hook";
+import { authProvider } from "./auth.provider";
 
 const API_URL = 'https://localhost:5101/communicationHub'
 
@@ -44,7 +44,7 @@ class ConnectionHubService {
     this.connection = new HubConnectionBuilder()
     .configureLogging(LogLevel.Trace)
     .withUrl(API_URL, {
-      accessTokenFactory: () => useAuth().getJwt()
+      accessTokenFactory: () => authProvider.jwt
     })
     .withAutomaticReconnect()
     .build();
@@ -90,7 +90,7 @@ class ConnectionHubService {
     .catch(async (err: Error) => {
       console.log('An error occurred', err);
       if (err instanceof HttpError && err.statusCode === 401) {
-        useAuth().logout();
+        authProvider.signout(() => {})
       }
     });
   }
