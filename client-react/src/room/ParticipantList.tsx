@@ -9,7 +9,6 @@ const ParticipantList = () => {
 
   useEffect(() => {
     const subscription = connection.getParticipantsStateUpdate().subscribe(update => {
-      console.log(update)
       setParticipants([...update.participants])
     })
     return () => subscription.unsubscribe()

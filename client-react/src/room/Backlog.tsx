@@ -10,7 +10,6 @@ const Backlog = () => {
 
   useEffect(() => {
     const subscription = connection.getStoryStateUpdate().subscribe(update => {
-      console.log(update)
       setStories([...update.stories])
     })
     return () => subscription.unsubscribe()

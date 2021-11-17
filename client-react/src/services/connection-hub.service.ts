@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { HttpError, HubConnection, HubConnectionBuilder, HubConnectionState, LogLevel } from "@microsoft/signalr";
+import { HubConnection, HubConnectionBuilder, HubConnectionState, LogLevel } from "@microsoft/signalr";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { NavigationUpdate } from "../models/navigation-update.model";
 import { ParticipantsStateUpdate } from "../models/participants-state-update.model";
@@ -77,9 +77,18 @@ class ConnectionHubService {
     await this.connection.invoke(CommunicationHubMethod.EnterRoom, roomId);
   }
 
+  public async selectValueAsync(value: number, roomId: string) {
+    await this.ensureConnection();
+    await this.connection.invoke(CommunicationHubMethod.SelectValue, value, roomId);
+  }
+
   ensureConnection() {
     if (this.connection.state === HubConnectionState.Connected) {
       return;
+    }
+
+    if (this.connection.state !== HubConnectionState.Disconnected){
+      this.connection.stop().then(() => console.log('stopped'))
     }
 
     return this.connection
@@ -87,11 +96,14 @@ class ConnectionHubService {
     .then(() => {
       console.log('Connection started!')
     })
-    .catch(async (err: Error) => {
-      console.log('An error occurred', err);
-      if (err instanceof HttpError && err.statusCode === 401) {
-        authProvider.signout(() => {})
+    .catch((err: any) => {
+      if (err.errorType === 'FailedToNegotiateWithServerError') {
+        console.log('logging out')
+        authProvider.signout(() => {
+          window.location.reload()
+        })
       }
+      console.log('An error occurred', err);
     });
   }
 }

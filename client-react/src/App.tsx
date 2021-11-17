@@ -19,7 +19,7 @@ class App extends Component {
             <Route path="/lobby" element={<RequireAuth><Lobby /></RequireAuth>} />
             <Route path="/room/:roomid" element={<RequireAuth><Room /></RequireAuth>}>
               <Route path="backlog" element={(<Backlog />)} />
-              <Route path="poker" element={(<Poker />)} />
+              <Route path="poker/:storyid" element={(<Poker />)} />
               <Route index element={(<Backlog />)} />
             </Route>
           </Routes>
