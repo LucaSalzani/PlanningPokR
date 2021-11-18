@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { HubConnection, HubConnectionBuilder, HubConnectionState, LogLevel } from "@microsoft/signalr";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { NavigationUpdate } from "../models/navigation-update.model";
@@ -7,7 +6,7 @@ import { RoomSettingsUpdate } from "../models/room-settings-update.model";
 import { StoryStateUpdate } from "../models/story-state-update.model";
 import { authProvider } from "./auth.provider";
 
-const API_URL = 'https://localhost:5101/communicationHub'
+const API_URL = process.env.REACT_APP_BACKEND_BASE_URL + 'communicationHub'
 
 enum CommunicationHubMethod {
   EnterRoom = 'enterRoom',

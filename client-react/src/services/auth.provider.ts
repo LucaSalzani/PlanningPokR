@@ -1,7 +1,7 @@
 import axios from "axios";
 import jwt_decode from 'jwt-decode';
 
-const API_URL = 'https://localhost:5101/api/auth'
+const API_URL = process.env.REACT_APP_BACKEND_BASE_URL + 'api/auth'
 
 const authProvider = {
   isAuthenticated: false,
