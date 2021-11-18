@@ -77,6 +77,11 @@ class ConnectionHubService {
     await this.connection.invoke(CommunicationHubMethod.EnterRoom, roomId);
   }
 
+  public async leaveRoomAsync() {
+    await this.ensureConnection();
+    await this.connection.invoke(CommunicationHubMethod.LeaveRoom);
+  }
+
   public async selectValueAsync(value: number, roomId: string) {
     await this.ensureConnection();
     await this.connection.invoke(CommunicationHubMethod.SelectValue, value, roomId);

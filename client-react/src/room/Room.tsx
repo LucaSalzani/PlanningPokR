@@ -9,6 +9,10 @@ const Room = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
+    window.addEventListener("beforeunload", () => connection.leaveRoomAsync());
+  })
+
+  useEffect(() => {
     if (!roomid) {
       return
     }
@@ -32,16 +36,9 @@ const Room = () => {
     })
     return () => subscription.unsubscribe()
   }, [connection, navigate])
-
-  const toPoker = () => {
-    navigate('./poker')
-  }
-
-  const toBacklog = () => {
-    navigate('./backlog')
-  }
-
-  const toLobby = () => {
+    
+  const toLobby = async () => {
+    await connection.leaveRoomAsync()
     navigate('/lobby')
   }
 
@@ -49,8 +46,6 @@ const Room = () => {
     <>
       <h2>Room {roomid}</h2>
       <button onClick={toLobby}>BackToLobby</button>
-      <button onClick={toPoker}>Poker</button>
-      <button onClick={toBacklog}>Backlog</button>
       <Outlet />
       <ParticipantList />
     </>

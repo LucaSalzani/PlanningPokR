@@ -102,8 +102,7 @@ namespace Server.Communication
             UpdateConnectionId();
             await ReportActivity();
             var participant = participantRepository.GetById(Context.UserIdentifier);
-
-            if (participant == null)
+            if (participant?.RoomId == null)
             {
                 return;
             }
