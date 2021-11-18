@@ -102,7 +102,7 @@ class ConnectionHubService {
     })
     .catch((err: any) => {
       if (err.errorType === 'FailedToNegotiateWithServerError') {
-        console.log('logging out')
+        console.log('logging out after connection error')
         authProvider.signout(() => {
           window.location.reload()
         })
