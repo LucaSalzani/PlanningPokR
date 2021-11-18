@@ -1,9 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import * as jwt_decode from 'jwt-decode';
+import jwt_decode, { JwtPayload } from 'jwt-decode';
 
 import { environment } from './../../environments/environment';
+
+interface BasicAuthJwtPayload extends JwtPayload {
+  nameid?: string
+}
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +22,7 @@ export class AuthService {
     this.jwt = localStorage.getItem('jwt');
     this.isLoggedIn = !!this.jwt;
     if (!!this.jwt) {
-      const decodedToken = jwt_decode(this.jwt);
+      const decodedToken = jwt_decode<BasicAuthJwtPayload>(this.jwt);
       this.userId = decodedToken.nameid;
     }
   }
@@ -32,7 +36,7 @@ export class AuthService {
     .toPromise().then((token: string) => { // TODO: Error handling (User feedback)
       this.isLoggedIn = true;
       this.jwt = token;
-      const decodedToken = jwt_decode(this.jwt);
+      const decodedToken = jwt_decode<BasicAuthJwtPayload>(this.jwt);
       this.userId = decodedToken.nameid;
       localStorage.setItem('jwt', token);
     });
