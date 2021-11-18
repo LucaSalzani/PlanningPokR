@@ -83,5 +83,5 @@ steps:
 - task: AzureStaticWebApp@0
   inputs:
     app_location: '/client-react'
-    output_location: '/client-react/build'
+    output_location: '/build'
     azure_static_web_apps_api_token: $(deployment_token)
