@@ -47,8 +47,9 @@ steps:
 - task: Npm@1
   displayName: 'Angular npm install'
   inputs:
-    command: 'ci'
+    command: 'custom'
     workingDir: 'Client/'
+    customCommand: 'install -f'
 
 - task: Npm@1
   displayName: 'Angular Build'
